@@ -1,0 +1,148 @@
+---
+import { Icon } from 'astro-icon/components';
+import type { FeatureSection } from '@/schemas/features';
+import { Image } from 'astro:assets';
+import BannerFocusContainer from './BannerFocusContainer.astro';
+import { featureBannerMotivation } from '@/content/home/featureCardsMotivation';
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = 'white',
+  tag,
+  title,
+  subtitle,
+  items,
+  image,
+  layout = 'image-right',
+  cta,
+  banner,
+} = Astro.props.section;
+
+// Tema
+const isDark = variant === 'dark';
+
+const sectionBg = isDark ? 'bg-zinc-900' : 'bg-white';
+const tagColor = variant === "white" ? "text-white bg-primary-700" : "text-primary-700 bg-white";
+const titleColor = isDark ? 'text-white' : 'text-secondary-700';
+const textColor = isDark ? 'text-white' : 'text-secondary-700';
+const subtitleColor = isDark ? 'text-gray-300' : 'text-secondary-700';
+const borderColor = isDark ? 'border-gray-700' : 'border-secondary-200';
+const iconBg = isDark ? 'bg-primary-200 text-primary-900' : 'bg-primary-500 text-white';
+
+const hasImage = Boolean(image);
+
+// Layout da imagem
+const isImageLeft = layout === 'image-left';
+
+// Animações
+const animation = items?.animation || null;
+const list = items?.list ?? [];
+const hasCTA = cta ? true : false;
+---
+
+<section class={`w-full flex items-center justify-center py-10 lg:py-20 ${sectionBg}`}>
+  <div class="px-3 md:px-6 xl:px-0 max-w-7xl">
+
+    {hasImage ? (
+      <!-- Layout COM imagem -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+        {image?.href && (
+          <div
+            class={`w-full max-w-lg flex justify-center fade-up ${
+              isImageLeft ? 'order-0' : 'order-1'
+            }`}
+          >
+            <Image
+              width={800}
+              height={500}
+              src={image.href}
+              alt={image.alt}
+              class={`rounded-2xl w-full aspect-video object-cover ${image.customClass ?? ''}`}
+            />
+          </div>
+        )}
+
+        <div class={`${isImageLeft ? 'order-1' : 'order-0'}`}>
+            <div class="text-left space-y-6 fade-up">
+              <h2 class={`font-bold font-chivo text-[35px] text-4xl ${titleColor}`}>
+                  {title}
+                </h2>
+
+              {subtitle && (
+                <p class={`text-quote md:text-lead-lg max-w-[600px] ${subtitleColor}`}>
+                  {subtitle}
+                </p>
+              )}
+            </div>
+        </div>
+
+      </div>
+    ) : (
+      <!-- Layout SEM imagem (padrão) -->
+      <div class="text-center mb-10 fade-up">
+        {tag && (
+          <span class={`w-fit text-sm px-5 py-1 rounded-full uppercase ${tagColor}`}>
+            {tag}
+          </span>
+        )}
+        <h2 class={`font-bold font-chivo text-4xl md:text-5xl lg:text-6xl mt-3 ${titleColor}`}>
+          {title}
+        </h2>
+        {subtitle && (
+          <p class={`font-medium text-sm md:text-xl mx-auto max-w-[743px] mt-4 ${subtitleColor}`}>
+            {subtitle}
+          </p>
+        )}
+      </div>
+    )}
+
+    <!-- LIST -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:items-center gap-6 mb-12">
+      {list.map((item) => (
+        <div
+          class={`flex flex-col h-full items-start gap-5 hover:bg-zinc-50 p-4 border rounded-3xl ${borderColor} ${animation}`}
+        >
+          <!-- Ícone -->
+          {item.icon && (
+            <span class={`w-16 h-16 min-w-16 flex items-center justify-center rounded-2xl ${iconBg}`}>
+              <Icon
+                width="30"
+                height="30"
+                class="min-w-10"
+                name={item.icon}
+              />
+            </span>
+          )}
+
+          <div>
+            <h3 class={`font-bold font-chivo text-xl mb-2 ${textColor}`}>
+              {item.title}
+            </h3>
+            <p class={isDark ? 'text-gray-300' : 'text-secondary-600'}>
+              {item.text}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <BannerFocusContainer section={featureBannerMotivation} />
+
+    <!-- CTA -->
+    {hasCTA && (
+      <div class="text-center mt-10">
+        <a
+          href={cta?.href}
+          target={cta?.target}
+          class={`btn btn-${cta?.variant} ${cta?.customClass ?? ''}`}
+        >
+          {cta?.label}
+        </a>
+      </div>
+    )}
+
+  </div>
+</section>

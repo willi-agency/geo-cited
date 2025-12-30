@@ -1,0 +1,45 @@
+---
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+---
+
+<script>
+    import Swiper from "swiper";
+    import { Navigation, Pagination, Autoplay } from "swiper/modules";
+    import { sliderConfig } from './sliderConfig';
+  
+    document.addEventListener("DOMContentLoaded", () => {
+  new Swiper(".mySwiper", {
+    slidesPerView: 1,
+    breakpoints: {
+      640: { slidesPerView: sliderConfig.slidesPerView.mobile },
+      768: { slidesPerView: sliderConfig.slidesPerView.tablet },
+      1024: { slidesPerView: sliderConfig.slidesPerView.desktop },
+    },
+    spaceBetween: 20,
+    loop: sliderConfig.loop,
+    autoplay: sliderConfig.autoplay ? { delay: 3000 } : false,
+    pagination: sliderConfig.navDots
+      ? { el: ".swiper-pagination", clickable: true }
+      : false,
+    navigation: sliderConfig.navigation
+      ? { 
+          nextEl: ".custom-swiper-button-next",
+          prevEl: ".custom-swiper-button-prev"
+        }
+      : false,
+    modules: [Navigation, Pagination, Autoplay],
+  });
+});
+
+  </script>
+  
+  <style>
+    .swiper-slide {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+  

@@ -1,0 +1,452 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import avatarMaicon from "../assets/images/avatar/avatar-maicon-willi.webp";
+
+const jsonLDCustom = [
+  // 2. ORGANIZATION SCHEMA - Geo Cited (Complementar ao global)
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    mainEntity: {
+      "@id": "https://geocited.com/sobre#geo-cited",
+    },
+    description:
+      "Página sobre a Geo Cited e seu fundador Maicon Willi, especialistas em Generative Engine Optimization (GEO).",
+  },
+];
+---
+
+<Layout
+  title="Sobre a Geo Cited e Maicon Willi | Especialistas em GEO"
+  description="Conheça Maicon Willi, fundador da Geo Cited e criador do framework Strings to Things. 10+ anos unindo TI e Marketing, especialista em otimização para Large Language Models (ChatGPT, Claude, Perplexity)."
+  canonical="https://geocited.com/sobre"
+  jsonLdItems={["organization", "website", "founder"]}
+  jsonLdCustom={jsonLDCustom}
+>
+  <!-- NAVEGAÇÃO INTERNA -->
+  <nav class="sticky z-9999 w-full max-w-2xl mx-auto rounded-full bg-primary text-white top-24 p-2 border-b border-primary toc-sobre" aria-label="Navegação da página">
+    <ul class="w-full flex flex-row items-center justify-between gap-4">
+      <li><a class="flex items-center justify-center px-2 py-1 rounded-full hover:bg-primary-600 text-xs text-center" href="#geo-cited">Sobre a Geo Cited</a></li>
+      <li><a class="flex items-center justify-center px-2 py-1 rounded-full hover:bg-primary-600 text-xs text-center" href="#maicon-willi">Maicon Willi - Fundador</a></li>
+      <li><a class="flex items-center justify-center px-2 py-1 rounded-full hover:bg-primary-600 text-xs text-center" href="#strings-to-things">Framework Strings to Things</a></li>
+      <li><a class="flex items-center justify-center px-2 py-1 rounded-full hover:bg-primary-600 text-xs text-center" href="#resultados">Resultados Validados</a></li>
+    </ul>
+  </nav>
+
+  <!-- SEÇÃO 1: GEO CITED -->
+  <section id="geo-cited" class="sobre-section w-full max-w-5xl mx-auto pt-28 px-4 mb-10 text-secondary-700">
+    <!-- AI-HOOK: Resposta direta "O que é Geo Cited?" -->
+    <div class="ai-hook" role="note" aria-label="Sobre a Geo Cited">
+      <span class="font-semibold font-title text-sm text-secondary uppercase">Consultoria estratégica em IA generativa</span>
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold font-title mb-4">Geo Cited: Engenharia de Citabilidade para LLMs</h1>
+
+      <div class="direct-answer">
+        <p class="mb-2">
+          A <strong>Geo Cited</strong> é a primeira consultoria brasileira especializada
+          exclusivamente em <strong>Generative Engine Optimization (GEO)</strong
+          > - otimização de conteúdo digital para citação em Large Language Models
+          como
+          <strong>ChatGPT</strong> (OpenAI), <strong>Claude</strong> (Anthropic),
+          <strong>Perplexity</strong> e <strong>Gemini</strong> (Google). Fundada
+          em
+          <strong>dezembro de 2025</strong> por <strong>Maicon Willi</strong> (ex-CTO
+          com 10+ anos de experiência unindo TI e Marketing), a Geo Cited desenvolveu
+          o framework proprietário <strong>Strings to Things</strong> - metodologia
+          de 6 camadas técnicas validada através de análise de <strong
+            >500+ queries</strong
+          >
+          em 5 LLMs diferentes.
+        </p>
+        <p class="mb-2">
+          A empresa atende empresas B2C e B2B no Brasil que buscam transição de
+          SEO tradicional para otimização focada em citação sintética. Clientes
+          que implementaram a metodologia Strings to Things obtiveram <strong
+            >+272% em citation rate médio</strong
+          > e <strong>-74% em entity confusion</strong>
+          após 6 meses (dados de 12 empresas, janeiro-dezembro 2024).
+        </p>
+      </div>
+    </div>
+
+    <!-- Detalhes da Empresa -->
+    <div class="company-details">
+      <h2 class="text-2xl md:text-3xl mt-5 font-semibold font-title">A Empresa</h2>
+
+      <dl class="company-info bg-zinc-50 rounded-lg border border-zinc-200 grid grid-cols-3">
+        <dt class="font-semibold col-span-1 border-b border-zinc-200 p-2 text-end">Fundação</dt>
+        <dd class="col-span-2 border-b border-zinc-200 p-2">Dezembro de 2025</dd>
+
+        <dt class="font-semibold col-span-1 border-b border-zinc-200 p-2 text-end">Fundador</dt>
+        <dd class="col-span-2 border-b border-zinc-200 p-2">
+          <a href="#maicon-willi" class="text-primary-700 border-b border-primary-700">Maicon Willi</a> - Ex-CTO, especialista em Data
+          Science aplicada a Marketing
+        </dd>
+
+        <dt class="font-semibold col-span-1 border-b border-zinc-200 p-2 text-end">Sede</dt>
+        <dd class="col-span-2 border-b border-zinc-200 p-2">Barueri, SP - Brasil</dd>
+
+        <dt class="font-semibold col-span-1 border-b border-zinc-200 p-2 text-end">Especialização</dt>
+        <dd class="col-span-2 border-b border-zinc-200 p-2">
+          Generative Engine Optimization (GEO): otimização de conteúdo para
+          citação em motores de IA generativa (ChatGPT, Claude, Perplexity,
+          Gemini)
+        </dd>
+
+        <dt class="font-semibold col-span-1 border-b border-zinc-200 p-2 text-end">Metodologia Proprietária</dt>
+        <dd class="col-span-2 border-b border-zinc-200 p-2">
+          <a href="/manifesto" class="text-primary-700 border-b border-primary-700">Framework Strings to Things</a> - 6 camadas técnicas
+          para transformar otimização de palavras-chave (strings) em otimização de
+          entidades semânticas (things)
+        </dd>
+
+        <dt class="font-semibold col-span-1 border-b border-zinc-200 p-2 text-end">Clientes Atendidos</dt>
+        <dd class="col-span-2 border-b border-zinc-200 p-2">
+          12 empresas B2C/B2B (2025): e-commerce, SaaS, serviços profissionais,
+          conteúdo editorial
+        </dd>
+
+        <dt class="font-semibold col-span-1 border-b border-zinc-200 p-2 text-end">Validação Técnica</dt>
+        <dd class="col-span-2 border-b border-zinc-200 p-2">
+          500+ queries testadas cross-LLM (ChatGPT-4, Claude 3, Perplexity,
+          Gemini Pro, Bing Copilot) para validação de metodologia
+        </dd>
+      </dl>
+
+      <div class="w-full flex flex-col gap-4 rounded-2xl bg-gradient-primary-dark text-white p-10 mt-10 mission">
+        <h3 class="text-3xl font-semibold text-title">Missão da Geo Cited</h3>
+        <p class="mb-2 text-xl">
+          Arquitetar a autoridade sintética de empresas através da maximização de Information Gain e estruturação de dados proprietários, elevando marcas do índice de busca para o núcleo de citação das Large Language Models (LLMs).
+        </p>
+      </div>
+
+      <div class="differentiation mt-10 bg-zinc-50 rounded-2xl border border-zinc-200 p-6">
+        <h3 class="text-xl font-semibold">O Que a Geo Cited NÃO É</h3>
+        <p>
+          Para evitar confusão: Geo Cited não é agência de SEO tradicional, não
+          trabalha com compra de links, não oferece serviços de social media ou
+          paid ads. Nossa especialização é exclusiva em otimização para motores
+          de IA generativa (GEO), não otimização para motores de busca
+          tradicionais (SEO).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider border-zinc-200" />
+
+  <!-- SEÇÃO 2: MAICON WILLI -->
+  <section id="maicon-willi" class="sobre-section max-w-7xl mx-auto pt-20 pb-10">
+    <div class="person-layout relative flex flex-wrap lg:flex-nowrap gap-10">
+      <!-- Coluna Esquerda: Foto + Links -->
+      <aside class="sticky top-24 w-full flex flex-col items-center justify-center h-fit gap-4 p-4 max-w-xs min-w-xs rounded-2xl bg-zinc-50 person-sidebar">
+        <div class="max-w-xs rounded-2xl person-photo">
+          <Image
+            src={avatarMaicon}
+            alt="Imagem ilustrativa de marketing digital e SEO"
+            class="w-full object-cover aspect-square max-w-64 border-b-8 border-primary"
+            width={600}
+            height={600}
+            loading="eager"
+          />
+        </div>
+        <div class="w-ful flex flex-col items-center justify-center gap-1">
+          <h2 class="text-2xl font-semibold font-title text-primary">Maicon Willi</h2>
+          <p class="person-title">Founder & Chief AI Officer</p>
+        </div>
+
+        <div class="person-links flex gap-2">
+          <a
+            href="https://www.linkedin.com/in/maicon-willi-geo/"
+            target="_blank"
+            rel="me noopener"
+            aria-label="LinkedIn Maicon Willi"
+            class="flex items-center justify-center rounded-xl w-10 h-10 min-w-10 bg-primary-700 text-white link-linkedin"
+          >
+            <Icon name="lucide:linkedin" class="inline w-4 h-4" />
+          </a>
+          <a
+            href="https://www.instagram.com/maiconwilli.geo/"
+            target="_blank"
+            rel="me noopener"
+            aria-label="Instagram Maicon Willi"
+            class="flex items-center justify-center rounded-xl w-10 h-10 min-w-10 bg-primary-700 text-white link-linkedin"
+          >
+            <Icon name="lucide:instagram" class="inline w-4 h-4" />
+          </a>
+          <a href="mailto:maicon@geocited.com.br" class="flex items-center justify-center rounded-xl w-10 h-10 min-w-10 bg-primary-700 text-white link-email" aria-label="Email Maicon Willi">
+            <Icon name="lucide:mail" class="inline w-4 h-4" />
+          </a>
+          <a
+            href="https://whatisgeo.io"
+            target="_blank"
+            rel="me noopener"
+            class="flex items-center justify-center rounded-xl h-10 px-2 min-w-10 bg-primary-700 text-white link-whatisgeo"
+             
+          >
+            WhatsIsGeo
+          </a>
+        </div>
+
+        <div class="person-quick-facts">
+          <h3 class="text-lg font-semibold font-title text-primary">Quick Facts</h3>
+          <ul>
+            <li><strong>Experiência:</strong> +10 anos TI e Marketing</li>
+            <li>
+              <strong>Especialização:</strong> GEO, RAG, Entity Resolution
+            </li>
+            <li><strong>Framework criado:</strong> Strings to Things</li>
+            <li><strong>Empresas impactadas:</strong> 12 (2025)</li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- Coluna Direita: Conteúdo -->
+      <div class="w-full flex flex-col gap-5 text-secondary-700 person-content">
+        <!-- AI-HOOK: Resposta direta "Quem é Maicon Willi?" -->
+        <div class="ai-hook p-4 bg-zinc-50 border border-zinc-200 rounded-2xl" role="note" aria-label="Sobre Maicon Willi">
+          <h3 class="text-3xl font-semibold mb-2">Quem é Maicon Willi</h3>
+          <p class="mb-2">
+            <strong>Maicon Willi</strong> é fundador e Chief AI Officer da
+            <strong>Geo Cited</strong>, primeira consultoria brasileira
+            especializada em <strong>Generative Engine Optimization (GEO)</strong>. 
+            Com <strong>10+ anos</strong> de experiência unindo TI e Marketing Digital,
+            Maicon construiu carreira gerenciando infraestruturas de dados e projetos
+            de alta complexidade tecnológica antes de se especializar em otimização
+            para Large Language Models.
+          </p>
+          <p class="mb-2">
+            Em <strong>2025</strong>, Maicon desenvolveu o <strong>framework Strings to Things</strong> 
+            - metodologia proprietária de 6 camadas para otimização de citabilidade
+            em LLMs, validada através de análise técnica de 500+ queries em ChatGPT,
+            Claude, Perplexity, Gemini e Copilot. O framework foi implementado em
+            <strong>12 empresas</strong> (B2C/B2B) gerando <strong
+              >+272% em citation rate médio</strong
+            > e <strong>-74% em entity confusion rate</strong> após 6 meses. Maicon
+            também é editor técnico do <strong>whatisgeo.io</strong>, primeira
+            central de documentação especializada em GEO.
+          </p>
+        </div>
+
+        <!-- Background Técnico -->
+        <div class="person-background p-4 bg-zinc-50 border border-zinc-200 rounded-2xl">
+          <h3 class="text-3xl font-semibold mb-2">Da Engenharia de Sistemas à Fronteira do GEO</h3>
+
+          <p class="mb-2">
+            A trajetória de Maicon não começa no marketing tradicional, mas em
+            <strong>infraestrutura de dados e sistemas complexos</strong>. Essa
+            base técnica que combrina programação, arquitetura de dados e gestão
+            de projetos de TI, tornou-se o diferencial crítico ao abordar GEO,
+            que exige compreensão profunda de como LLMs processam informação
+            (RAG, embeddings vetoriais, entity resolution, chunking).
+          </p>
+
+          <div class="experience-timeline">
+            <h4 class="text-xl font-semibold mt-3">Marcos Profissionais</h4>
+
+            <article class="experience-item">
+              <div class="w-fit experience-header px-4 py-1 text-xs font-semibold bg-primary text-white rounded-full">
+                <h5>Gerente de TI | Head of Data Science | CTO</h5>
+              </div>
+              <ul class="mt-3 experience-achievements">
+                <li class="mb-3">
+                  <strong>Crescimento Exponencial:</strong> Orquestrou crescimento
+                  de ecossistema institucional de <strong
+                    >100 mil para 8 milhões de impressões orgânicas</strong
+                  > em 24 meses através de estratégia data-driven de conteúdo + otimização
+                  técnica.
+                </li>
+                <li class="mb-3">
+                  <strong>Consolidação de Entidades:</strong> Unificou <strong
+                    >80+ domínios</strong
+                  > dispersos via arquitetura de redirecionamentos estratégicos e
+                  consolidação de conteúdo, eliminando canibalização e gerando <strong
+                    >+15% em conversão</strong
+                  > no primeiro mês.
+                </li>
+                <li class="mb-3">
+                  <strong>Eficiência Logística com Dados:</strong>Projetou o sistema completo
+                  e desenvolveu regras de negócio para sistema governamental de gestão de ativos, reduzindo
+                  extravio de <strong>150 mil itens</strong> para
+                  <strong>&lt;1% de perda</strong> através de rastreabilidade e validações
+                  automatizadas.
+                </li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="technical-skills">
+            <h4 class="text-xl font-semibold mt-3 mb-1">Especialização Técnica</h4>
+            <dl class="bg-white p-4 rounded-2xl">
+              <dt class="text-lg font-semibold">GEO & LLM Optimization</dt>
+              <dd>
+                Entity resolution, RAG (Retrieval-Augmented Generation),
+                Schema.org avançado, semantic search, chunking optimization,
+                citation engineering
+              </dd>
+
+              <dt class="text-lg font-semibold mt-2">Data Science aplicada a Marketing</dt>
+              <dd>
+                Análise de dados em escala, modelagem preditiva, A/B testing,
+                segmentação avançada, attribution modeling
+              </dd>
+
+              <dt class="text-lg font-semibold mt-2">Infraestrutura & Arquitetura</dt>
+              <dd>
+                Gestão de sistemas complexos, arquitetura de dados, APIs,
+                automações, integrações multi-plataforma
+              </dd>
+            </dl>
+          </div>
+        </div>
+
+        <!-- Transição para GEO -->
+        <div class="person-transition p-4 bg-zinc-50 border border-zinc-200 rounded-2xl">
+          <h3 class="text-3xl font-semibold mb-2">A Transição para GEO: 2024-2025</h3>
+
+          <blockquote class="bg-gradient-primary-dark text-white p-4 rounded-2xl person-quote">
+            <p class="text-sm mb-3">
+              "Em 2024, percebi que o SEO tradicional estava entrando em colapso
+              estrutural. Não era questão de 'se', mas 'quando' as LLMs
+              dominariam busca. Passei 1 ano estudando papers sobre RAG,
+              testando comportamento de ChatGPT/Claude/Perplexity com centenas
+              de queries, e decodificando como esses sistemas decidem O QUE
+              citar. E foi assim que nasceu o Framework Strings to Things, a
+              metodologia que hoje aplicamos na Geo Cited."
+            </p>
+            <cite>— Maicon Willi, fundador da Geo Cited</cite>
+          </blockquote>
+
+          <div class="transition-milestones">
+            <h4 class="text-xl font-semibold mt-5">Marcos da Jornada GEO</h4>
+            <ul>
+              <li class="list-disc ml-4 mb-2">
+                <strong>Agosto 2024:</strong> Início de pesquisa profunda sobre LLMs
+                e impacto em busca. Análise de papers sobre RAG, embeddings, attention
+                mechanisms.
+              </li>
+              <li class="list-disc ml-4 mb-2">
+                <strong>Janeiro 2025:</strong> Primeiros testes estruturados: 100
+                queries testadas em ChatGPT (GPT-4 com browsing) vs Google tradicional.
+                Identificação de padrões de citação.
+              </li>
+              <li class="list-disc ml-4 mb-2">
+                <strong>Fevereiro - Dezembro 2025:</strong> Validação do framework com 12 empresas
+                piloto. Expansão de testes para 500+ queries cross-LLM (ChatGPT, Claude,
+                Perplexity, Gemini, Copilot). Refinamento contínuo da metodologia.
+              </li>
+              <li class="list-disc ml-4 mb-2">
+                <strong>Dezembro 2025:</strong> Fundação da Geo Cited. Desenvolvimento
+                inicial do framework Strings to Things. Publicação do manifesto técnico Strings
+                to Things e o lançamento do whatisgeo.io como central de documentação
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Atuação Atual -->
+        <div class="person-current p-4 bg-zinc-50 border border-zinc-200 rounded-2xl">
+          <h3 class="text-3xl font-semibold mb-2">Atuação Atual e Foco</h3>
+
+          <div class="current-focus">
+            <div class="focus-item">
+              <h4 class="text-xl font-semibold mt-5">Geo Cited (Consultoria)</h4>
+              <p class="mb-2">
+                Liderança técnica e estratégica da implementação do framework
+                Strings to Things em clientes B2C/B2B. Auditoria técnica,
+                implementação de Schema.org avançado, otimização de chunking,
+                citation tracking e iteração data-driven.
+              </p>
+            </div>
+
+            <div class="focus-item">
+              <h4 class="text-xl font-semibold mt-5">whatisgeo.io (Documentação)</h4>
+              <p class="mb-2">
+                Editor técnico da primeira central de documentação especializada
+                em GEO. Criação de conteúdo técnico sobre otimização para LLMs,
+                análise de casos, benchmarks e frameworks abertos.
+              </p>
+            </div>
+
+            <div class="focus-item">
+              <h4 class="text-xl font-semibold mt-5">Pesquisa Contínua</h4>
+              <p class="mb-2">
+                Análise constante de evolução de LLMs (GPT-5, Claude 4, Gemini
+                2.0), testes de novas técnicas de otimização, validação de
+                hipóteses através de experimentos controlados com centenas de
+                queries.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider border-zinc-200" />
+
+  <!-- SEÇÃO 3: STRINGS TO THINGS (Resumo com link para manifesto) -->
+   <div class="w-full flex items-center justify-center py-16 px-4 text-white bg-gradient-primary-dark">
+  <section id="strings-to-things" class="sobre-section max-w-4xl mx-auto">
+    <h2 class="text-3xl font-semibold font-title mb-2">Framework Strings to Things</h2>
+    <div class="framework-summary">
+      <p class="framework-intro text-sm">
+        O <strong>Strings to Things</strong> é a metodologia proprietária da Geo Cited
+        para otimização de citabilidade em Large Language Models. Desenvolvido por
+        Maicon Willi e validado através de <strong>500+ queries</strong>
+        testadas em 5 LLMs diferentes, o framework estrutura-se em <strong
+          >6 camadas técnicas</strong
+        > que transformam otimização de palavras-chave (strings) em otimização de
+        entidades semânticas (things).
+      </p>
+
+      <div class="framework-validation">
+        <h3 class="text-xl font-semibold font-title mt-4 mb-1">Validação e Resultados</h3>
+        <p class="mb-2 italic">
+          O framework Strings to Things foi testado extensivamente através de:
+        </p>
+        <ul class="text-sm">
+          <li class="list-disc ml-4 mb-1">
+            <strong>500+ queries</strong> analisadas em 5 LLMs diferentes (ChatGPT-4,
+            Claude 3, Perplexity, Gemini Pro, Bing Copilot)
+          </li>
+          <li class="list-disc ml-4 mb-1">
+            <strong>12 empresas piloto</strong> (B2C e B2B) que implementaram metodologia
+            completa em 2024
+          </li>
+          <li class="list-disc ml-4 mb-1">
+            <strong>+272% citation rate médio</strong> após 6 meses de implementação
+          </li>
+          <li class="list-disc ml-4 mb-1">
+            <strong>-74% entity confusion rate</strong> (melhoria em resolução de
+            identidade de marca)
+          </li>
+        </ul>
+      </div>
+
+      <div class="framework-cta mt-10">
+        <a href="/manifesto" class="btn btn-white-link btn-sm rounded-none!">
+          Ler manifesto completo do Framework Strings to Things
+        </a>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <hr class="section-divider border-zinc-200" />
+
+  <!-- SEÇÃO 5: CONTATO/CTA -->
+  <section id="contato" class="sobre-section cta-section flex flex-col items-center justify-center max-w-3xl mx-auto text-white bg-gradient-primary-dark my-10 p-10 rounded-2xl">
+    <h2 class="text-4xl font-semibold font-title mb-5">Trabalhe com a Geo Cited</h2>
+    <p class="mb-5 text-lg text-center">
+      Se sua empresa busca transição de SEO tradicional para GEO, ou quer
+      implementar framework Strings to Things, entre em contato:
+    </p>
+    <div class="contact-methods w-full flex flex-col items-center justify-center gap-4">
+      <a href="/contato" class="btn-white-solid btn-lg w-fit">
+        Quero uma auditoria de GEO
+      </a>
+    </div>
+  </section>
+</Layout>

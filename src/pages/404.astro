@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Página não encontrada" description="Erro 404 - A página que você procura não existe.">
+  <section class="min-h-screen flex flex-col items-center justify-center text-center px-4 py-16">
+    <h1 class="text-6xl font-bold text-red-600">404</h1>
+    <h2 class="text-2xl font-semibold mt-4">Página não encontrada</h2>
+    <p class="mt-2 text-gray-700">
+      A URL que você tentou acessar não existe ou foi movida.
+    </p>
+    <a
+      href="/"
+      class="mt-6 inline-block bg-main-600 hover:bg-main-700 text-white px-6 py-3 rounded-xl transition"
+    >
+      Voltar para a página inicial
+    </a>
+  </section>
+</Layout>

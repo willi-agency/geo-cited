@@ -1,0 +1,110 @@
+---
+import type { FooterContent } from 'src/schemas/footer';
+import { Icon } from 'astro-icon/components';
+import { footerContent } from 'src/content/footer';
+import RowForm from '../forms/RowForm.astro';
+import { Image } from 'astro:assets';
+
+const { content = footerContent } = Astro.props as { content: FooterContent };
+---
+
+<footer class="left-0 w-full bg-footer py-10 -z-10 overflow-auto">
+  <div class="w-full max-w-7xl mx-auto px-4 md:px-8 z-10 relative">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 md:gap-4 mb-10">
+      {content.sections.map((col, index) => (
+        <div class={`flex flex-col items-start gap-2 ${index === 1 ? "md:ml-10" : ""}`}>
+          {col.blocks.map((block) => (
+            <>
+              {block.type === 'logo' && (
+                <Image width={150} height={40} src={block.src} alt={block.alt} class="h-10 mb-2 lg:mb-3" />
+              )}
+              {block.type === 'slogan' && (
+                <div class="text-sm lg:text-base text-gray-300 leading-tight mb-2 lg:mb-3">{block.text}</div>
+              )}
+              {block.type === 'partners' && (
+                <div class="w-full flex gap-3 md:gap-5 items-center mb-2 lg:mb-3">
+                    {/* Usando asserção de tipo simples para o objeto Partners */}
+                    {(block as { type: 'partners', items: any[] }).items.map((p) => (
+                        
+                        // REMOVIDA A CHAVE DE ABERTURA AQUI {
+                        p.href ? (
+                            // Se tem link, renderiza o <a> envolvendo a Image
+                            <a 
+                                href={p.href} 
+                                target={p.target || '_self'} 
+                                aria-label={`Verificação ${p.alt}`} 
+                                class="h-10 w-auto flex items-center justify-center" 
+                            >
+                                <Image 
+                                    width={150} 
+                                    height={40} 
+                                    src={p.src} 
+                                    alt={p.alt} 
+                                    class="h-10 w-auto" 
+                                />
+                            </a>
+                        ) : (
+                            // Se não tem link, renderiza apenas a Image
+                            <Image 
+                                width={150} 
+                                height={40} 
+                                src={p.src} 
+                                alt={p.alt} 
+                                class="h-10 w-auto" 
+                            />
+                        )
+                        // REMOVIDA A CHAVE DE FECHAMENTO AQUI }
+                    ))}
+                </div>
+              )}
+              {block.type === 'title' && (
+                <div class="text-sm lg:text-base font-semibold text-white uppercase mb-2 lg:mb-3">{block.text}</div>
+              )}
+              {block.type === 'links' && (
+                <ul class="flex flex-col gap-0.5 lg:gap-2">
+                  {block.items.map(link => (
+                    <li><a href={link.href} class="text-white hover:text-primary transition text-sm lg:text-base">{link.label}</a></li>
+                  ))}
+                </ul>
+              )}
+              {block.type === 'address' && (
+                <div class="text-sm lg:text-base text-gray-300 mb-1 whitespace-pre-line max-w-52">{block.lines.join(', ')}</div>
+              )}
+              {block.type === 'contact' && (
+                <div>
+                  {block.items.map(c => (
+                    <a href={c.href} class="flex items-center gap-2 text-sm lg:text-base text-gray-300 mb-1">
+                      {c.icon && <Icon name={c.icon} class="text-lg" />}
+                      {c.label}
+                    </a>
+                  ))}
+                </div>
+              )}
+              {block.type === 'social' && (
+                <div class="flex flex-col gap-3 mt-1">
+                  {block.items.map(s => (
+                    <a href={s.href} class="text-sm lg:text-base text-white" target="_blank" rel="noopener">{s.label}</a>
+                  ))}
+                </div>
+              )}
+            </>
+          ))}
+        </div>
+      ))}
+    </div>
+    <hr class="w-full border-zinc-500 my-10">
+    <div class="flex flex-col md:flex-row justify-between items-center py-4 text-sm lg:text-base text-gray-400 gap-2 max-w-7xl mx-auto px-4">
+      <div class="flex gap-2">
+        {content.legal.filter(l => l.type === 'copyright').map(l => l.text)}
+      </div>
+      <div class="flex gap-4">
+        {content.legal
+          .filter(l => l.type === 'links')
+          .flatMap(l => l.items)
+          .map(link => (
+            <a href={link.href} class="text-gray-300 hover:text-primary transition">{link.label}</a>
+          ))}
+      </div>
+    </div>
+  </div>
+</footer>

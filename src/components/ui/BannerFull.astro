@@ -1,0 +1,73 @@
+---
+import type { FeatureSection } from "@/schemas/features";
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = "dark",
+  title,
+  subtitle,
+  description,
+  cta,
+} = Astro.props.section;
+
+// Tema
+const isDark = variant === "dark";
+
+const bgColor = isDark ? "bg-zinc-900 text-white" : "bg-white text-gray-900";
+const subtitleColor = isDark ? "text-zinc-400" : "text-gray-600";
+const descriptionColor = isDark ? "text-white" : "text-gray-700";
+---
+
+<section class={`relative flex items-center justify-center overflow-hidden pt-14 ${bgColor}`}>
+  
+  <!-- Glow BG -->
+
+  <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] z-0"></div>
+  <div class="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] z-0"></div>
+
+  <div class="container relative z-10 px-4 py-20 mx-auto">
+    
+    <div class="max-w-4xl mx-auto text-center space-y-6">
+
+      <!-- Título -->
+      <h1
+        class={`text-4xl md:text-6xl lg:text-7xl font-semibold fade-in`}
+        set:html={title}
+      />
+
+      <!-- Subtitle -->
+      {subtitle && (
+        <p class={`text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed fade-in ${subtitleColor}`}>
+          {subtitle}
+        </p>
+      )}
+
+      <!-- Description -->
+      {description && (
+        <p
+          class={`text-xl md:text-2xl mt-4 block font-medium fade-up ${descriptionColor}`}
+          set:html={description}
+        />
+      )}
+
+      <!-- CTA -->
+      {cta && (
+        <div class="pt-6 fade-up">
+          <a
+            href={cta.href}
+            target={cta.target}
+            class={`btn btn-${cta.variant} ${cta.customClass ?? ""}`}
+          >
+            {cta.label} {cta.icon && <Icon name={cta.icon} />}
+          </a>
+        </div>
+      )}
+
+    </div>
+  </div>
+
+</section>

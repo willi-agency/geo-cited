@@ -1,0 +1,36 @@
+---
+// src/components/seo/PaginationSEO.astro
+export const prerender = true;
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+}
+
+const { currentPage, totalPages, baseUrl } = Astro.props;
+
+// Gerar URLs completas
+const siteUrl = Astro.site?.toString().replace(/\/$/, '') || 'https://www.geocited.com.br';
+
+const prevUrl = currentPage > 1 
+  ? (currentPage === 2 ? `${siteUrl}${baseUrl}` : `${siteUrl}${baseUrl}/${currentPage - 1}`)
+  : null;
+
+const nextUrl = currentPage < totalPages 
+  ? `${siteUrl}${baseUrl}/${currentPage + 1}`
+  : null;
+
+const canonicalUrl = currentPage === 1 
+  ? `${siteUrl}${baseUrl}`
+  : `${siteUrl}${baseUrl}/${currentPage}`;
+---
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Paginação SEO -->
+{prevUrl && <link rel="prev" href={prevUrl} />}
+{nextUrl && <link rel="next" href={nextUrl} />}
+
+<!-- Open Graph para compartilhamento -->
+<meta property="og:url" content={canonicalUrl} />

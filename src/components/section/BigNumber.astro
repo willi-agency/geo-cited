@@ -1,0 +1,17 @@
+---
+import { bigNumberContent } from "src/content/bigNumber";
+---
+
+<section class="w-full flex items-center justify-center bg-primary py-6 px-4 gap-10">
+  <div class="w-full flex flex-col md:flex-row justify-center items-center max-w-6xl">
+    <h2 class="text-2xl font-semibold w-full max-w-80 text-white text-center md:text-start">{bigNumberContent.title}</h2>
+    <div class="w-full container grid grid-cols-2 md:grid-cols-4 items-center justify-end gap-0">
+      {bigNumberContent.bigNumbers.map(bigNumber => (
+        <h3 class={`flex flex-col justify-center items-center gap-0 text-white text-center px-4 py-4 md:px-8`}>
+          <span class="text-2xl font-bold"> <span>{bigNumber.detail}</span><span data-counter={bigNumber.number}>0</span></span>
+          <span class="text-xs">{bigNumber.label}</span>
+        </h3>
+      ))}
+    </div>
+  </div>
+</section>

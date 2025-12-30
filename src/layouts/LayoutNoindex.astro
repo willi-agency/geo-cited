@@ -1,0 +1,36 @@
+---
+// src/layouts/Layout.astro
+import Header from "@/components/section/briefing/Header.astro";
+import "../styles/global.css";
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Quality SMI - Agência de Marketing Digital</title>
+    <meta name="description" content="Agência de Marketing Digital focada em resultados. Especialistas em SEO, Marketing de Conteúdo, Mídia Paga e Desenvolvimento Web." />
+
+    <!-- Favicon atualizado para múltiplos formatos -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.webp" />
+    <link rel="apple-touch-icon" href="/favicon.webp" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap">
+    
+    <meta name="theme-color" content="#EEF2FF">
+    <meta name="format-detection" content="telephone=no" />
+  </head>
+  <body class="antialiased bg-body text-body">
+    <Header/>
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <script type="module" src="/scripts/mask-engine.js"></script>
+  </body>
+</html>

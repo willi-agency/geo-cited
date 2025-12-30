@@ -1,0 +1,86 @@
+---
+import type { FeatureSection } from "@/schemas/features";
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = "white",
+  tag,
+  title,
+  subtitle,
+  description,
+  items,
+  cta,
+  ctas = [],
+} = Astro.props.section;
+
+// BG + TEXT VARIANT
+const variantClass = {
+  white: "bg-white text-zinc-900",
+  dark: "bg-zinc-900 text-white",
+  primary: "bg-primary text-white"
+}[variant];
+
+// TEXT COLORS FOR INTERNAL ELEMENTS
+const titleColor = variant === "white" ? "text-zinc-900" : "text-white";
+const textColor = variant === "white" ? "text-zinc-600" : "text-zinc-300";
+const iconColor = variant === "white" ? "text-primary" : variant === "dark" ? "text-primary-400" : "text-white";
+---
+<section class={`w-full py-24 sm:py-32 ${variantClass}`}>
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <div class="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:max-w-none lg:grid-cols-3">
+
+      <!-- LEFT COLUMN -->
+      <div>
+        {tag && <h2 class="text-lg font-semibold leading-8 tracking-tight text-primary">{tag}</h2>}
+        <p class={`mt-2 text-3xl font-bold tracking-tight sm:text-4xl ${titleColor}`} set:html={title}></p>
+
+        {subtitle && (
+          <p class={`mt-2 text-lg ${textColor}`}>{subtitle}</p>
+        )}
+
+        {description && (
+          <p class={`mt-6 text-base leading-7 ${textColor}`}>
+            {description}
+          </p>
+        )}
+
+        <!-- CTAs -->
+        <div class="mt-8 flex flex-col gap-3">
+          {cta && (
+            <a href={cta.href} class={`btn btn-${cta.variant} ${cta.customClass ?? ""}`}>
+              {cta.label}  {cta.icon && <Icon name={cta.icon} />}
+            </a>
+          )}
+
+          {ctas.length > 0 && (
+            <div class="flex flex-wrap gap-4">
+              {ctas.map((c) => (
+                <a href={c.href} class={`btn btn-${c.variant} ${c.customClass ?? ""}`}>
+                  {c.label}  {c.icon && <Icon name={c.icon} />}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- RIGHT CHECKLIST -->
+      <dl class={`col-span-2 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:gap-y-16 ${textColor}`}>
+        {items?.list?.map((item) => (
+          <div class="relative flex flex-col pl-9">
+            <dt class={`font-semibold ${titleColor}`}>
+              <Icon name={item.icon ?? "lucide:check"} class={`absolute top-1 left-0 h-5 w-5 ${iconColor}`} />
+              {item.title}
+            </dt>
+            {item.text && <dd class="mt-2">{item.text}</dd>}
+          </div>
+        ))}
+      </dl>
+
+    </div>
+  </div>
+</section>

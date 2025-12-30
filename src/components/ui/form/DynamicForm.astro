@@ -1,0 +1,474 @@
+---
+// src/components/ui/form/DynamicForm.astro
+import type { FormConfig } from "@/schemas/form";
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+  config: FormConfig;
+}
+
+const {
+  formId,
+  title,
+  description,
+  sections,
+  submitButton,
+  variant = "white",
+  customClass = "",
+} = Astro.props.config;
+
+// Variant colors
+const containerClass = {
+  white: "bg-white text-zinc-900",
+  dark: "bg-zinc-900 text-white",
+  primary: "bg-primary text-white",
+}[variant];
+
+const labelColor = variant === "white" ? "text-zinc-700!" : "text-zinc-200!";
+const inputClass = variant === "white" 
+  ? "border-zinc-400! bg-zinc-50! placeholder-zinc-500! focus:border-orange-500 focus:bg-zinc-900 placeholder:text-zinc-500" 
+  : "border-zinc-500 bg-zinc-800 focus:border-orange-500 focus:bg-zinc-900 placeholder:text-zinc-500";
+const descriptionColor = variant === "white" ? "text-zinc-500" : "text-zinc-400";
+---
+
+<section class={`w-full overflow-hidden py-10 md:py-20 px-5 md:px-16 lg:px-20 ${containerClass} ${customClass}`}>
+  <div class="max-w-4xl mx-auto">
+    
+    {/* Form Header */}
+    {(title || description) && (
+      <div class="mb-8 md:mb-12 shadow-lg border border-zinc-200 rounded-2xl p-3 md:p-6 lg:p-10">
+        {title && <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold mb-4">{title}</h2>}
+        {description && <p class={`text-lg ${descriptionColor}`}>{description}</p>}
+      </div>
+    )}
+
+    {/* Success Message (Hidden by default) */}
+    <div id={`${formId}-success`} class="hidden mb-8 shadow-lg border-2 border-green-500 bg-green-50 rounded-2xl p-6 md:p-8">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="flex-shrink-0 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-2xl font-semibold text-green-800">Briefing Enviado com Sucesso!</h3>
+          <p class="text-green-600 mt-1">Recebemos suas informações e em breve entraremos em contato.</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Error Message (Hidden by default) */}
+    <div id={`${formId}-error`} class="hidden mb-8 shadow-lg border-2 border-red-500 bg-red-50 rounded-2xl p-6 md:p-8">
+      <div class="flex items-center gap-4">
+        <div class="flex-shrink-0 w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-2xl font-semibold text-red-800">Erro ao Enviar</h3>
+          <p class="text-red-600 mt-1" id={`${formId}-error-message`}>Ocorreu um erro. Tente novamente.</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Form */}
+    <form 
+      id={`form-${formId}`}
+      class="w-full flex flex-col gap-10" 
+      data-type-form={formId}
+      data-form-id={formId}
+    >
+      
+      {/* Sections */}
+      {sections.map((section) => (
+        <div class={`w-full flex flex-col gap-6 shadow-lg border border-zinc-200 rounded-2xl p-3 md:p-6 lg:p-10 ${section.customClass ?? ""}`} id={section.id}>
+          
+          {/* Section Header */}
+          {(section.title || section.description) && (
+            <div class="flex flex-col gap-2">
+              {section.title && (
+                <h3 class="text-xl md:text-2xl font-semibold flex items-center gap-2">
+                  <span class="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white text-sm font-bold">
+                    {sections.indexOf(section) + 1}
+                  </span>
+                  {section.title}
+                </h3>
+              )}
+              {section.description && (
+                <p class={`text-base ${descriptionColor}`}>{section.description}</p>
+              )}
+            </div>
+          )}
+
+          {/* Fields */}
+          <div class="flex flex-col gap-6">
+            {section.fields.map((field) => {
+              const fieldId = `${formId}-${field.id}`;
+              const isRequired = field.required ?? false;
+
+              return (
+                <div class={`w-full flex flex-col gap-2 ${field.customClass ?? ""}`}>
+                  
+                  {/* Label */}
+                  <label for={fieldId} class={`text-base font-medium ${labelColor}`}>
+                    {field.label}
+                    {isRequired && <span class="text-red-500 ml-1">*</span>}
+                  </label>
+
+                  {/* Description */}
+                  {field.description && (
+                    <p class={`text-sm ${descriptionColor} -mt-1`}>{field.description}</p>
+                  )}
+
+                  {/* TEXT INPUT */}
+                  {(field.type === 'text' || field.type === 'email' || field.type === 'tel' || field.type === 'number' || field.type === 'url') && (
+                    <input
+                      type={field.type}
+                      id={fieldId}
+                      name={field.dataField}
+                      data-field={field.dataField}
+                      data-label={field.label}
+                      data-mask={field.dataMask}
+                      placeholder={field.placeholder}
+                      required={isRequired}
+                      class={`w-full px-4 py-3 rounded-xl border transition-colors ${inputClass}`}
+                    />
+                  )}
+
+                  {/* TEXTAREA */}
+                  {field.type === 'textarea' && (
+                    <textarea
+                      id={fieldId}
+                      name={field.dataField}
+                      data-field={field.dataField}
+                      data-label={field.label}
+                      placeholder={field.placeholder}
+                      required={isRequired}
+                      rows={field.rows ?? 4}
+                      class={`w-full px-4 py-3 rounded-xl border transition-colors resize-y ${inputClass}`}
+                    />
+                  )}
+
+                  {/* RADIO BUTTONS */}
+                  {field.type === 'radio' && field.options && (
+                    <div class="flex flex-col gap-3" data-label={field.label}>
+                      {field.options.map((option) => (
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="radio"
+                            name={field.dataField}
+                            value={option.value}
+                            data-field={field.dataField}
+                            data-label={field.label}
+                            data-option-label={option.label}
+                            required={isRequired}
+                            class="w-5 h-5 text-primary border-2 border-zinc-300 focus:ring-primary cursor-pointer"
+                          />
+                          <span class={`text-base ${labelColor} group-hover:text-primary transition-colors`}>
+                            {option.label}
+                          </span>
+                        </label>
+                      ))}
+                      
+                      {/* Other Option */}
+                      {field.hasOtherOption && (
+                        <div class="flex flex-col gap-2">
+                          <label class="flex items-center gap-3 cursor-pointer group">
+                            <input
+                              type="radio"
+                              name={field.dataField}
+                              value="other"
+                              data-field={field.dataField}
+                              data-label={field.label}
+                              data-option-label="Outro"
+                              class="w-5 h-5 text-primary border-2 border-zinc-300 focus:ring-primary cursor-pointer"
+                              data-toggle-other={`${fieldId}-other-input`}
+                            />
+                            <span class={`text-base ${labelColor} group-hover:text-primary transition-colors`}>
+                              Outro:
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            id={`${fieldId}-other-input`}
+                            name={`${field.dataField}_other`}
+                            data-field={`${field.dataField}_other`}
+                            data-label={`${field.label} (Outro)`}
+                            placeholder={field.otherPlaceholder ?? "Especifique..."}
+                            disabled
+                            class={`w-full px-4 py-3 rounded-xl border transition-colors ml-8 ${inputClass} disabled:opacity-50 disabled:cursor-not-allowed`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* CHECKBOXES */}
+                  {field.type === 'checkbox' && field.options && (
+                    <div class="flex flex-col gap-3" data-label={field.label}>
+                      {field.options.map((option) => (
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            name={`${field.dataField}[]`}
+                            value={option.value}
+                            data-field={field.dataField}
+                            data-label={field.label}
+                            data-option-label={option.label}
+                            class="w-5 h-5 text-primary border-2 border-zinc-300 rounded focus:ring-primary cursor-pointer"
+                          />
+                          <span class={`text-base ${labelColor} group-hover:text-primary transition-colors`}>
+                            {option.label}
+                          </span>
+                        </label>
+                      ))}
+
+                      {/* Other Option */}
+                      {field.hasOtherOption && (
+                        <div class="flex flex-col gap-2">
+                          <label class="flex items-center gap-3 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              name={`${field.dataField}[]`}
+                              value="other"
+                              data-field={field.dataField}
+                              data-label={field.label}
+                              data-option-label="Outro"
+                              class="w-5 h-5 text-primary border-2 border-zinc-300 rounded focus:ring-primary cursor-pointer"
+                              data-toggle-other={`${fieldId}-other-input`}
+                            />
+                            <span class={`text-base ${labelColor} group-hover:text-primary transition-colors`}>
+                              Outro:
+                            </span>
+                          </label>
+                          <input
+                            type="text"
+                            id={`${fieldId}-other-input`}
+                            name={`${field.dataField}_other`}
+                            data-field={`${field.dataField}_other`}
+                            data-label={`${field.label} (Outro)`}
+                            placeholder={field.otherPlaceholder ?? "Especifique..."}
+                            disabled
+                            class={`w-full px-4 py-3 rounded-xl border transition-colors ml-8 ${inputClass} disabled:opacity-50 disabled:cursor-not-allowed`}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* SELECT */}
+                  {field.type === 'select' && field.options && (
+                    <select
+                      id={fieldId}
+                      name={field.dataField}
+                      data-field={field.dataField}
+                      data-label={field.label}
+                      required={isRequired}
+                      class={`w-full px-4 py-3 rounded-xl border transition-colors ${inputClass}`}
+                    >
+                      <option value="">{field.placeholder ?? "Selecione uma opção"}</option>
+                      {field.options.map((option) => (
+                        <option value={option.value} data-option-label={option.label}>{option.label}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+
+      {/* Submit Button */}
+      <div class="w-full flex justify-center">
+        <button
+          type="submit"
+          id={`${formId}-submit-btn`}
+          class={`btn btn-${submitButton.variant ?? 'primary-solid'} ${submitButton.size ?? 'btn-lg'} ${submitButton.customClass ?? ''} flex items-center gap-3 transition-all`}
+        >
+          <span id={`${formId}-btn-text`}>{submitButton.label}</span>
+          <span id={`${formId}-btn-loader`} class="hidden">
+            <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </span>
+          {submitButton.icon && <Icon name={submitButton.icon} width={20} height={20} id={`${formId}-btn-icon`} />}
+        </button>
+      </div>
+
+      <section class="w-full text-center max-w-5xl mx-auto ">
+        <p class={`text-lg ${descriptionColor}`}>Este formulário foi criado com tecnologia Quality SMI e as informações enviadas serão utilizadas apenas para o desenvolvimento do projeto e permanecerão confidenciais.</p>
+      </section>
+    </form>
+  </div>
+</section>
+
+<script>
+  // Toggle "Other" input fields
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleInputs = document.querySelectorAll('[data-toggle-other]');
+    
+    toggleInputs.forEach((toggle) => {
+      const targetId = toggle.getAttribute('data-toggle-other');
+      const targetInput = document.getElementById(targetId as string) as HTMLInputElement;
+      
+      if (targetInput) {
+        toggle.addEventListener('change', (e) => {
+          const isChecked = (e.target as HTMLInputElement).checked;
+          targetInput.disabled = !isChecked;
+          if (!isChecked) {
+            targetInput.value = '';
+          } else {
+            targetInput.focus();
+          }
+        });
+      }
+    });
+
+    // 📤 HANDLE FORM SUBMISSION
+    const forms = document.querySelectorAll('[data-type-form]');
+    
+    forms.forEach((form) => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formElement = e.target as HTMLFormElement;
+        const formType = formElement.getAttribute('data-type-form') || '';
+        const formId = formElement.getAttribute('data-form-id') || '';
+        
+        // Elements
+        const submitBtn = document.getElementById(`${formId}-submit-btn`) as HTMLButtonElement;
+        const btnText = document.getElementById(`${formId}-btn-text`) as HTMLSpanElement;
+        const btnLoader = document.getElementById(`${formId}-btn-loader`) as HTMLSpanElement;
+        const btnIcon = document.getElementById(`${formId}-btn-icon`);
+        const successMsg = document.getElementById(`${formId}-success`) as HTMLDivElement;
+        const errorMsg = document.getElementById(`${formId}-error`) as HTMLDivElement;
+        const errorMsgText = document.getElementById(`${formId}-error-message`) as HTMLParagraphElement;
+        
+        // Disable button and show loader
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+        btnText.textContent = 'Enviando...';
+        btnLoader?.classList.remove('hidden');
+        if (btnIcon) btnIcon.classList.add('hidden');
+        
+        // Hide previous messages
+        successMsg?.classList.add('hidden');
+        errorMsg?.classList.add('hidden');
+        
+        try {
+          // Collect form data with human-readable labels
+          const data: Record<string, any> = {};
+          
+          // Get all form elements with data-label attribute
+          const elements = formElement.querySelectorAll('[data-label]');
+          
+          elements.forEach((element) => {
+            const input = element as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+            const label = input.getAttribute('data-label') || input.name;
+            
+            // Skip disabled fields
+            if (input.disabled) return;
+            
+            // Handle different input types
+            if (input.type === 'checkbox') {
+              const checkbox = input as HTMLInputElement;
+              if (checkbox.checked) {
+                // Get the option label if available
+                const optionLabel = checkbox.getAttribute('data-option-label') || checkbox.value;
+                
+                if (!data[label]) {
+                  data[label] = [];
+                }
+                data[label].push(optionLabel);
+              }
+            } else if (input.type === 'radio') {
+              const radio = input as HTMLInputElement;
+              if (radio.checked) {
+                // Get the option label for the selected radio
+                const optionLabel = radio.getAttribute('data-option-label') || radio.value;
+                data[label] = optionLabel;
+              }
+            } else if (input.tagName === 'SELECT') {
+              const select = input as HTMLSelectElement;
+              if (select.value) {
+                // Get the text of the selected option
+                const selectedOption = select.options[select.selectedIndex];
+                data[label] = selectedOption.text;
+              }
+            } else {
+              // Text inputs, textarea, etc.
+              if (input.value) {
+                data[label] = input.value;
+              }
+            }
+          });
+          
+          // Convert arrays to comma-separated strings for better email formatting
+          Object.keys(data).forEach(key => {
+            if (Array.isArray(data[key])) {
+              data[key] = data[key].join(', ');
+            }
+          });
+          
+          console.log('📋 Dados formatados para envio:', data);
+          
+          // Send to API
+          const response = await fetch('/api/briefings', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              formType: formType,
+              data: data
+            })
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok && result.success) {
+            // Success!
+            successMsg?.classList.remove('hidden');
+            formElement.reset();
+            
+            // Scroll to success message
+            successMsg?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Hide form after 500ms
+            setTimeout(() => {
+              formElement.style.display = 'none';
+            }, 500);
+            
+          } else {
+            throw new Error(result.error || 'Erro ao enviar o briefing');
+          }
+          
+        } catch (error) {
+          console.error('Erro ao enviar briefing:', error);
+          
+          // Show error message
+          errorMsg?.classList.remove('hidden');
+          if (errorMsgText) {
+            errorMsgText.textContent = error instanceof Error 
+              ? error.message 
+              : 'Ocorreu um erro ao enviar. Por favor, tente novamente.';
+          }
+          
+          // Scroll to error message
+          errorMsg?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+        } finally {
+          // Re-enable button
+          submitBtn.disabled = false;
+          submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+          btnText.textContent = 'Enviar Briefing';
+          btnLoader?.classList.add('hidden');
+          if (btnIcon) btnIcon.classList.remove('hidden');
+        }
+      });
+    });
+  });
+</script>

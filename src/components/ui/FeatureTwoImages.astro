@@ -1,0 +1,121 @@
+---
+import type { FeatureSection } from "@/schemas/features";
+import { Icon } from "astro-icon/components";
+import { Image } from 'astro:assets';
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = "white",
+  layout = "image-right",
+
+  tag,
+  title,
+  subtitle,
+  description,
+
+  items,
+  cta,
+  ctas,
+
+  image,
+  images = [],
+} = Astro.props.section;
+
+// VARIANT HANDLER
+const variantClass = {
+  dark: "bg-zinc-900 text-white",
+  white: "bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white",
+  primary: "bg-primary-600 text-white",
+}[variant];
+
+const textColor = {
+  dark: "text-zinc-200",
+  white: "text-zinc-800 dark:text-zinc-200",
+  primary: "text-white",
+}[variant];
+
+// LAYOUT
+const isImageLeft = layout === "image-left";
+const isImageRight = layout === "image-right";
+---
+
+<section class={`w-full overflow-hidden ${variantClass}`}>
+  <div class="gap-16 items-center py-12 px-4 mx-auto max-w-7xl lg:grid lg:grid-cols-2 lg:py-20 lg:px-8">
+
+    <!-- LEFT COLUMN (TEXT) -->
+    <div class={`font-light sm:text-lg flex flex-col gap-4 left-to-right ${textColor} ${isImageRight ? "" : "lg:order-2"}`}>
+
+      {tag && (
+        <span class="text-sm font-semibold uppercase tracking-wide opacity-70">
+          {tag}
+        </span>
+      )}
+
+      <h2 class="text-4xl md:text-5xl lg:text-6xl tracking-tight font-semibold text-inherit">
+        {title}
+      </h2>
+
+      {description && (
+        <p class="opacity-90">{description}</p>
+      )}
+
+      {subtitle && (
+        <p class="opacity-90">{subtitle}</p>
+      )}
+
+      {items?.list?.map(item => (
+        <p class="opacity-90">{item.text}</p>
+      ))}
+
+      <!-- CTAS -->
+      {(cta || ctas) && (
+        <div class="flex flex-wrap gap-3 mt-4">
+          {cta && (
+            <a href={cta.href} target={cta.target} class={`btn btn-${cta.variant} ${cta.customClass || ""}`}>
+              {cta.label} {cta?.icon && (<Icon name={cta.icon} />)}
+            </a>
+          )}
+          {ctas?.map(btn => (
+            <a href={btn.href} target={btn.target} class={`btn btn-${btn.variant} ${btn.customClass || ""}`}>
+              {btn.label} {btn?.icon && (<Icon name={btn.icon} />)}
+            </a>
+          ))}
+        </div>
+      )}
+
+    </div>
+
+    <!-- RIGHT COLUMN (IMAGES) -->
+    {images.length > 0 && (
+      <div
+        class={`grid mt-10 lg:mt-0 right-to-left ${
+          images.length === 1
+            ? "grid-cols-1" // 1 imagem ocupa 100%
+            : "grid-cols-2 gap-4" // 2 imagens ficam lado a lado
+        } ${isImageRight ? "" : "lg:order-1"}`}
+      >
+        {images[0] && (
+          <Image
+            width={400} height={600}
+            class={`w-full max-h-[60vh] object-cover rounded-2xl ${images[0].customClass}`}
+            src={images[0].href}
+            alt={images[0].alt}
+          />
+        )}
+
+        {images.length > 1 && images[1] && (
+          <Image
+            width={400} height={600}
+            class={`w-full max-h-[60vh] object-cover mt-4 lg:mt-10 rounded-2xl ${images[1].customClass}`}
+            src={images[1].href}
+            alt={images[1].alt}
+          />
+        )}
+      </div>
+    )}
+
+  </div>
+</section>

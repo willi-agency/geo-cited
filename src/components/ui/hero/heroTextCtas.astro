@@ -1,0 +1,111 @@
+---
+import type { FeatureSection } from "@/schemas/features";
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = "dark",
+  layout = "center",
+
+  tag,
+  tagLink,
+  title,
+  subtitle, // usaremos como "alertBadge"
+  description,
+
+  cta,
+  ctas,
+
+  items, // logos (svg)
+  image,
+  images,
+
+  showForm = false,
+} = Astro.props.section;
+
+// VARIANT HANDLER
+const variantClass = {
+  dark: "bg-zinc-900 text-white",
+  white: "bg-white text-zinc-900",
+  primary: "bg-gradient-primary-dark text-white",
+}[variant];
+
+// ALERT / BADGE
+const badgeClasses = {
+  dark: "bg-zinc-800 text-white",
+  white: "bg-zinc-900 text-white",
+  primary: "bg-zinc-100 text-primary-700",
+}[variant];
+
+const bgBadge = {
+  dark: "bg-zinc-950 text-zinc-200",
+  white: "bg-zinc-200 text-zinc-600",
+  primary: "bg-primary-300 text-primary-900",
+}[variant];
+
+// LAYOUT HANDLER
+const isImageLeft = layout === "image-left";
+const isImageRight = layout === "image-right";
+const center = layout === "center";
+---
+
+<section class={`w-full overflow-hidden px-4 py-10 md:px-10 md:py-20 ${variantClass}`}>
+  <div class="max-w-7xl mx-auto flex flex-col gap-10">
+
+    <!-- ALERT BADGE -->
+    {tag && (
+      <a
+        href={tagLink}
+        class={`inline-flex justify-between items-center py-1 px-3 pr-4 gap-4 mx-auto text-sm rounded-full ${bgBadge} fade-in`}
+      >
+        <span class={`text-xs rounded-full px-3 py-1 mr-3 ${badgeClasses}`}>
+          {subtitle}
+        </span>
+        <span class="text-sm font-medium">{tag}</span>
+        <Icon width={20} height={20} name="lucide:chevron-right" />
+      </a>
+    )}
+
+    <!-- TITLE / DESCRIPTION -->
+    <div class="text-center max-w-3xl mx-auto">
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-none fade-in">
+        {title}
+      </h2>
+
+      {description && (
+        <p class="mt-4 text-lg opacity-90 md:text-xl fade-in" set:html={description}></p>
+      )}
+    </div>
+
+    <!-- BUTTONS -->
+    {(cta || ctas) && (
+      <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in">
+        {cta && (
+          <a href={cta.href} target={cta.target} class={`btn btn-${cta.variant} ${cta.customClass}`}>
+            {cta.label} {cta?.icon && (<Icon name={cta.icon} />)}
+          </a>
+        )}
+
+        {ctas?.map(btn => (
+          <a href={btn.href} target={btn.target} class={`btn btn-${btn.variant} ${btn.customClass}`}>
+            {btn.label} {btn?.icon && (<Icon name={btn.icon} />)}
+          </a>
+        ))}
+      </div>
+    )}
+
+    <!-- FEATURED LOGOS -->
+    {items?.list && (
+      <div class="w-full px-4 lg:px-20">
+        <div class="flex flex-wrap justify-center gap-10 mt-4">
+          {items.list.map((item) => (
+            <Icon class="w-full max-w-40 opacity-70 transition hover:opacity-100 text-zinc-600" height={60} name={item.icon ? item.icon : 'lucide:trending-up'} />
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>

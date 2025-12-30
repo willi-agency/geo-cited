@@ -1,0 +1,150 @@
+---
+import type { FaqSection } from "@/schemas/faq";
+import { Icon } from "astro-icon/components";
+
+export interface Props {
+  section: FaqSection;
+}
+
+const {
+  variant = "white",
+  tag,
+  title,
+  description,
+  cta,
+  questions,
+  layout = {},
+} = Astro.props.section;
+
+// LAYOUT DEFAULTS
+const padding = layout.padding ?? "py-10 md:py-20 px-5 md:px-16 lg:px-20";
+const gap = layout.gap ?? "gap-10";
+const reverse = layout.reverse ? "md:flex-row-reverse" : "md:flex-row";
+
+// VARIANT COLORS
+const containerClass = {
+  white: "bg-white text-zinc-900",
+  dark: "bg-gradient-to-bl from-zinc-950 to-zinc-800 text-white",
+  primary: "bg-primary text-white",
+}[variant];
+
+const textMuted = variant === "white" ? "text-zinc-600" : "text-white/70";
+const cardBgClosed =
+  variant === "white" ? "bg-zinc-50 border-zinc-200" : "bg-white/10 border-white/20";
+const cardBgOpen =
+  variant === "white" ? "bg-primary-50" : "bg-white/20 border-white/30";
+---
+
+<section class={`overflow-hidden flex flex-col ${reverse} items-start justify-center ${gap} ${padding} ${containerClass}`}>
+  <!-- COLUNA ESQUERDA -->
+  <div class="w-full max-w-2xl flex flex-col items-start justify-start gap-4 left-to-right">
+    <h2 class="text-4xl md:text-5xl lg:text-6xl font-semibold text-secondary-700">{title}</h2>
+
+    {description && <p class={`text-base ${textMuted}`}>{description}</p>}
+
+    {cta && (
+      <a href={cta.href} target={cta.target ?? "_blank"} class={`w-fit mt-5 btn btn-${cta.variant ?? "dark"} ${cta.customClass ?? ""}`}>
+        {cta.text}
+      </a>
+    )}
+  </div>
+
+  <!-- COLUNA DIREITA - FAQ -->
+  <div class="w-full md:max-w-xl flex flex-col items-start gap-4" id="faq-container">
+    {questions.map((q, i) => (
+      <details
+        class={`faq-item w-full rounded-xl border ${cardBgClosed} group transition-colors`}
+        data-index={i}
+      >
+        <summary class="faq-summary w-full flex justify-between items-center p-4 cursor-pointer list-none">
+          <span class="font-semibold">{q.question}</span>
+
+          <span class="faq-icon-wrapper w-6 h-6 flex items-center justify-center rounded-full flex-shrink-0 ml-4 bg-zinc-200 text-zinc-800">
+            <Icon
+              name="lucide:plus"
+              class="faq-icon transition-transform duration-300"
+              width={18}
+              height={18}
+            />
+          </span>
+        </summary>
+
+        <div class="faq-content px-4 pb-4 text-base" set:html={q.response}></div>
+      </details>
+    ))}
+  </div>
+</section>
+
+<style>
+  summary::-webkit-details-marker,
+  summary::marker {
+    display: none;
+  }
+
+  details[open] .faq-content {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const faqItems = document.querySelectorAll('.faq-item');
+
+    faqItems.forEach((item) => {
+      const summary = item.querySelector('.faq-summary');
+      const icon = item.querySelector('.faq-icon');
+      const iconWrapper = item.querySelector('.faq-icon-wrapper');
+
+      const updateStyles = () => {
+        const isOpen = item.hasAttribute('open');
+
+        if (isOpen) {
+          icon.style.transform = 'rotate(135deg)';
+          item.classList.add('open');
+          item.classList.remove('bg-zinc-50');
+          item.classList.add('bg-primary-50');
+          iconWrapper.classList.remove('bg-zinc-200', 'text-zinc-800');
+          iconWrapper.classList.add('bg-primary', 'text-white');
+        } else {
+          icon.style.transform = 'rotate(0deg)';
+          item.classList.remove('open');
+          item.classList.add('bg-zinc-50');
+          iconWrapper.classList.remove('bg-primary', 'text-white');
+          iconWrapper.classList.add('bg-zinc-200', 'text-zinc-800');
+        }
+      };
+
+      summary.addEventListener('click', () => {
+        const isOpen = item.hasAttribute('open');
+
+        if (!isOpen) {
+          faqItems.forEach((otherItem) => {
+            if (otherItem !== item && otherItem.hasAttribute('open')) {
+              otherItem.removeAttribute('open');
+
+              const otherIcon = otherItem.querySelector('.faq-icon');
+              const otherIconWrapper = otherItem.querySelector('.faq-icon-wrapper');
+
+              otherIcon.style.transform = 'rotate(0deg)';
+              otherIconWrapper.classList.remove('bg-primary', 'text-white');
+              otherIconWrapper.classList.add('bg-zinc-200', 'text-zinc-800');
+            }
+          });
+        }
+
+        setTimeout(updateStyles, 0);
+      });
+    });
+  });
+</script>

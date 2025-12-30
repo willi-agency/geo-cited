@@ -1,0 +1,310 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { API_URL_BLOG, API_KEY }from "../../config/site";
+import { Icon } from "astro-icon/components";
+import BlogSearch from '@/components/integrations/BlogSearch.astro';
+import { Image } from 'astro:assets';
+
+// Type definitions
+interface Author {
+  id: string;
+  name: string;
+  bio: string;
+  image: string | null;
+  profileUrl: string | null;
+  sameAs: string[];
+}
+
+interface Taxonomy {
+  id: string;
+  name: string;
+  slug: string;
+  type: string;
+  description: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  thumb: string | null;
+}
+
+interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  image: string;
+  recommended: boolean;
+  createdAt: string;
+  updatedAt: string;
+  author: Author;
+  taxonomies: Taxonomy[];
+}
+
+interface BlogData {
+  authors: Author[];
+  categories: Taxonomy[];
+  tags: Taxonomy[];
+  newPosts: Post[];
+  recommendedPosts: Post[];
+}
+
+// Fetch data from API
+const res = `${API_URL_BLOG}/blog/articles/home/${API_KEY}?listTags=true&listCategories=true&listAuthors=true&newPosts=10&recommendedPosts=8`;
+
+let data: BlogData = {
+  authors: [],
+  categories: [],
+  tags: [],
+  newPosts: [],
+  recommendedPosts: []
+};
+
+try {
+  const response = await fetch(res);
+  if (response.ok) {
+    data = await response.json();
+  }
+} catch (error) {
+  console.error('Error fetching blog data:', error);
+}
+
+// Format date helper
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('pt-BR', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+};
+---
+
+<Layout
+  title="Últimos artigos do blog"
+  description="Confira os últimos conteúdos publicados pela nossa equipe."
+  canonical="https://geocited.com.br/servicos/blog"
+  jsonLdItems={["website", "organization"]}
+>
+<section class="py-16 px-4 mt-20">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-3">
+      <!-- Main Content - Recommended Posts -->
+      <div class="flex flex-col gap-y-10 lg:gap-y-14 xl:gap-y-20 lg:col-span-2">
+        <div>
+          <div class="lg:hidden rounded-[10px] border border-zinc-200 p-6 bg-white shadow-sm mb-10">
+            <BlogSearch />
+          </div>
+          <div class="flex items-center justify-between mb-8">
+            <h2 class="text-3xl font-bold text-zinc-900">Posts Recomendados</h2>
+            <a 
+              href="/blog/recomendados" 
+              class="btn btn-primary-solid btn-sm"
+            >
+              Ver mais
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Recommended Posts Grid -->
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {data.recommendedPosts.map((post) => (
+              <li 
+                class="group overflow-hidden rounded-[10px] bg-white shadow-[0_4px_80px_rgba(0,0,0,0.08)] transition-all hover:shadow-[0_8px_100px_rgba(0,0,0,0.12)]"
+              >
+                <a href={`/blog/${post.slug}`} class="block overflow-hidden">
+                  <Image 
+                    src={post.image} 
+                    alt={post.title}
+                    width="856" 
+                    height="540" 
+                    class="h-64 w-full object-cover transition-all duration-300 group-hover:scale-105"
+                  />
+                </a>
+                <div class="p-5">
+                  <!-- Post Meta -->
+                  <ul class="flex flex-wrap items-center gap-4 text-sm">
+                    {(post.taxonomies ?? [])
+                      .filter(tax => tax.type === 'category')
+                      .slice(0, 1)
+                      .map((category) => (
+                        <li class="relative font-semibold flex flex-row items-center justify-center gap-4">
+                          <a 
+                            href={`/blog/categoria/${category.slug}`}
+                            class="hover:text-orange-600 transition-colors"
+                          >
+                            {category.name}
+                          </a>
+                          <Icon width={20} height={20} name="lucide:dot" />
+                        </li>
+                      ))
+                    }
+                    <li class="font-semibold text-zinc-600">
+                      {formatDate(post.createdAt)}
+                    </li>
+                  </ul>
+
+                  <!-- Post Title & Description -->
+                  <h3 class="mb-3 mt-7 text-xl font-bold leading-tight hover:text-orange-600 transition-colors">
+                    <a href={`/blog/${post.slug}`}>
+                      {post.title}
+                    </a>
+                  </h3>
+                  <p class="mb-7 line-clamp-2 text-zinc-600 last:mb-0">
+                    {post.description}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="flex flex-col gap-y-[30px] lg:col-span-1">
+        <!-- Search Box -->
+        <div class="hidden lg:inline-block rounded-[10px] border border-zinc-200 p-6 bg-white shadow-sm">
+          <BlogSearch />
+        </div>
+
+        <!-- Categories -->
+        {data.categories.length > 0 && (
+          <div class="rounded-[10px] border border-zinc-200 p-8 bg-white shadow-sm">
+            <div class="relative mb-[30px] inline-block pb-[10px] text-lg font-semibold after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-black">
+              Categorias
+            </div>
+            <ul class="flex flex-wrap gap-4 items-center">
+              {data.categories.map((category) => (
+                <li>
+                  <a 
+                    href={`/blog/categoria/${category.slug}`}
+                    class="btn btn-dark-outline btn-sm"
+                  >
+                    {category.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- Recent Posts -->
+        <div class="rounded-[10px] border border-zinc-200 p-8 bg-white shadow-sm">
+          <div class="flex items-center justify-between mb-[30px]">
+            <div class="relative inline-block pb-[10px] text-lg font-semibold after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-black">
+              Posts Recentes
+            </div>
+            <a 
+              href="/blog/recentes" 
+              class="btn btn-dark-solid btn-sm"
+            >
+              Ver todos
+            </a>
+          </div>
+
+          <ul class="flex flex-col gap-y-6">
+            {data.newPosts.map((post) => (
+              <li class="group flex flex-col items-start gap-x-4 gap-y-4 sm:flex-row">
+                <a 
+                  href={`/blog/${post.slug}`} 
+                  class="inline-block h-[100px] w-full overflow-hidden rounded-[5px] sm:w-[120px] flex-shrink-0"
+                >
+                  <Image 
+                    src={post.image} 
+                    alt={post.title}
+                    width="120" 
+                    height="100" 
+                    class="h-full w-full object-cover transition-all duration-300 group-hover:scale-105"
+                  />
+                </a>
+                <div class="flex flex-col gap-y-2 flex-1">
+                  <span class="flex items-center gap-2 text-xs text-zinc-500">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    {formatDate(post.createdAt)}
+                  </span>
+                  <a 
+                    href={`/blog/${post.slug}`}
+                    class="text-sm font-bold leading-tight hover:text-orange-600 transition-colors line-clamp-2"
+                  >
+                    {post.title}
+                  </a>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Tags -->
+        {data.tags.length > 0 && (
+          <div class="rounded-[10px] border border-zinc-200 p-8 bg-white shadow-sm">
+            <div class="relative mb-[30px] inline-block pb-[10px] text-lg font-semibold after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-black">
+              Tags
+            </div>
+            <ul class="flex flex-wrap gap-2">
+              {data.tags.map((tag) => (
+                <li>
+                  <a 
+                    href={`/blog/tag/${tag.slug}`}
+                    class="btn btn-primary-solid btn-xs"
+                  >
+                    {tag.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- Newsletter -->
+        <div class="rounded-[10px] border border-zinc-200 p-8 bg-white shadow-sm">
+          <div class="relative mb-[30px] inline-block pb-[10px] text-lg font-semibold after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-black">
+            Newsletter
+          </div>
+          <p class="mb-5 text-zinc-600">
+            Assine nossa newsletter e receba as últimas atualizações
+          </p>
+          <form action="/newsletter/subscribe" method="post" class="flex flex-col">
+            <input 
+              type="email" 
+              name="email" 
+              id="sidebar-newsletter" 
+              placeholder="Seu e-mail" 
+              class="h-[60px] w-full rounded-2xl border border-zinc-300 bg-transparent px-6 py-[15px] text-base outline-none transition-all placeholder:text-zinc-500 focus:border-orange-600 focus:ring-2 focus:ring-orange-200"
+              required
+            />
+            <button 
+              type="submit" 
+              class="mt-5 block rounded-2xl border-2 border-black bg-black py-4 text-white transition-all hover:bg-orange-600 hover:border-orange-600 font-semibold"
+            >
+              Assinar Agora
+            </button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Custom scrollbar for sidebar if needed */
+  aside::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  aside::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  aside::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  
+  aside::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+</style>
+</Layout>

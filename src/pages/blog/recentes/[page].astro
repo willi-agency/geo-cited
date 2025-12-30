@@ -1,0 +1,86 @@
+---
+// src/pages/blog/recomendados/[page].astro
+import Layout from '../../../layouts/Layout.astro';
+import BlogArticleGrid from '@/components/ui/blog/BlogArticleGrid.astro';
+import { API_URL_BLOG, API_KEY } from "../../../config/site";
+
+export async function getStaticPaths() {
+  const POSTS_PER_PAGE = 3;
+  
+  try {
+    // Buscar total de posts
+    const firstRes = await fetch(
+      `${API_URL_BLOG}/blog/articles/all/${API_KEY}?sortBy=updatedAt&sortOrder=desc&page=1&perPage=1`
+    );
+    
+    if (!firstRes.ok) return [];
+    
+    const firstData = await firstRes.json();
+    const totalPosts = firstData.pagination?.total || 0;
+    const apiTotalPages = firstData.pagination?.totalPages || 1;
+    const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+    
+    if (totalPages <= 1) return []; // Não criar páginas se só tem 1
+    
+    // Buscar TODOS os posts
+    let allPosts = [];
+    for (let apiPage = 1; apiPage <= apiTotalPages; apiPage++) {
+    const allRes = await fetch(
+      `${API_URL_BLOG}/blog/articles/all/${API_KEY}?sortBy=updatedAt&sortOrder=desc&page=1&perPage=100`
+    );
+    if (allRes.ok) {
+        const data = await allRes.json();
+        allPosts.push(...(data.data || []));
+      }
+    }
+    
+    // Criar páginas 2, 3, 4... (página 1 é o index.astro)
+    const paths = [];
+    for (let page = 2; page <= totalPages; page++) {
+      const start = (page - 1) * POSTS_PER_PAGE;
+      const end = start + POSTS_PER_PAGE;
+      const postsForPage = allPosts.slice(start, end);
+      
+      paths.push({
+        params: { page: String(page) },
+        props: {
+          posts: postsForPage,
+          currentPage: page,
+          totalPages: totalPages,
+          totalPosts: totalPosts
+        }
+      });
+    }
+    
+    console.log(`✅ Páginas de recomendados geradas: ${paths.length + 1} (incluindo index)`);
+    return paths;
+    
+  } catch (error) {
+    console.error('Erro ao gerar páginas de recomendados:', error);
+    return [];
+  }
+}
+
+const { posts, currentPage, totalPages, totalPosts } = Astro.props;
+
+const title = `Posts recentes - Página ${currentPage} de ${totalPages}`;
+const description = `Confira nossa seleção de ${totalPosts} artigos mais recentes.`;
+---
+
+<Layout
+  title={title}
+  description={description}
+  jsonLdItems={["website", "organization"]}
+  currentPage={currentPage}
+  totalPages={totalPages}
+  baseUrl="/blog/recentes"
+>
+  <BlogArticleGrid
+    posts={posts}
+    title="Posts mais recentes"
+    description="Nossa seleção especial dos melhores conteúdos"
+    currentPage={currentPage}
+    totalPages={totalPages}
+    baseUrl="/blog/recentes"
+  />
+</Layout>

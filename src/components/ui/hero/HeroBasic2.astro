@@ -1,0 +1,65 @@
+---
+import type { FeatureSection } from "@/schemas/features";
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = "dark",
+  title,
+  subtitle,
+  description,
+  cta,
+} = Astro.props.section;
+
+// VARIANT COLORS
+const containerClass = {
+  white: "bg-white text-zinc-900",
+  dark: "bg-gradient-to-bl from-zinc-950 to-zinc-800 text-white",
+  primary: "bg-primary text-white",
+}[variant];
+
+const textColor = variant === "white" ? "text-zinc-600" : "text-white/70";
+const titleColor = variant === "white" ? "text-zinc-900" : "text-white";
+---
+
+<section
+  class={`min-h-[70vh] overflow-hidden p-8 md:px-20 md:py-20 mt-20 flex flex-col items-center justify-center text-center ${containerClass}`}
+>
+  <!-- TÍTULO -->
+  {title && (
+    <h2 class={`text-4xl md:text-6xl tracking-tight max-w-4xl fade-up ${titleColor}`}>
+      {title}
+    </h2>
+  )}
+
+  <!-- SUBTÍTULO -->
+  {subtitle && (
+    <p
+      class={`mt-4 text-xl max-w-3xl fade-up ${textColor}`}
+      data-delay-animation="200"
+    >
+      {subtitle}
+    </p>
+  )}
+
+  <!-- DESCRIÇÃO -->
+  {description && (
+    <p
+      class={`mt-4 text-lg max-w-4xl fade-up ${textColor}`}
+      data-delay-animation="200"
+    >
+      {description}
+    </p>
+  )}
+
+  <!-- CTA -->
+  {cta && (
+    <div class="flex mt-6 fade-up" data-delay-animation="300">
+      <a href={cta.href} target={cta.target} class={`btn btn-${cta.variant} ${cta.customClass || ""}`}>
+        {cta.label}
+      </a>
+    </div>
+  )}
+</section>

@@ -1,0 +1,188 @@
+---
+// ContactModal.astro - Versão leve sem GSAP
+---
+
+<div 
+  id="contact-modal"
+  class="contact-modal fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm opacity-0 invisible z-[9999] transition-all duration-300"
+  data-modal-variant="dark"
+>
+  <div class="modal-dialog w-full max-w-[600px] p-8 mx-4 scale-95 transition-transform duration-300">
+    <div class="modal-content bg-neutral-900 rounded-2xl p-8 relative shadow-2xl">
+      <button
+        class="close-modal absolute top-4 right-4 text-2xl text-white hover:text-red-500 bg-transparent border-none cursor-pointer z-10 p-2 transition-colors duration-200"
+        aria-label="Fechar modal"
+        title="Fechar modal"
+      >
+        ✕
+      </button>
+
+      <h2 class="text-2xl md:text-4xl font-bold mb-2 text-white">Entre em Contato</h2>
+      <p class="modal-subtitle text-[1.1rem] opacity-80 mb-8 text-white">
+        Preencha o formulário abaixo e retornaremos em breve
+      </p>
+
+      <form class="contact-form flex flex-col gap-6" data-form-id="contact-modal">
+        <!-- Nome -->
+        <div class="relative form-group flex flex-col gap-1">
+          <label for="name" class="font-semibold text-sm text-zinc-200">Nome completo</label>
+          <input
+            data-field="nome"
+            type="text"
+            id="name"
+            required
+            placeholder="Seu nome"
+            class="px-4 py-3 border-2 border-zinc-500 rounded-lg bg-zinc-800 text-white text-base transition-colors duration-200 focus:outline-none focus:border-orange-500 focus:bg-zinc-900 placeholder:text-zinc-500"
+          />
+        </div>
+
+        <!-- Telefone -->
+        <div class="relative form-group flex flex-col gap-1">
+          <label for="whatsapp-modal" class="font-semibold text-sm text-zinc-200">Telefone</label>
+          <input 
+            id="whatsapp-modal"
+            data-field="whatsapp"
+            data-mask="(##) ####-#### || (##) #####-####"
+            class="px-4 py-3 border-2 border-zinc-500 rounded-lg bg-zinc-800 text-white text-base focus:outline-none focus:border-orange-500 focus:bg-zinc-900 placeholder:text-zinc-500"
+            type="text"
+            placeholder="(00) 00000-0000"
+          />
+        </div>
+
+        <!-- Mensagem -->
+        <div class="relative form-group flex flex-col gap-1">
+          <label for="message" class="font-semibold text-sm text-zinc-200">Mensagem</label>
+          <textarea
+            data-field="mensagem"
+            id="message"
+            rows="5"
+            required
+            placeholder="Descreva sua necessidade..."
+            class="px-4 py-3 border-2 border-zinc-500 rounded-lg bg-zinc-800 text-white text-base transition-colors duration-200 resize-y min-h-[120px] focus:outline-none focus:border-orange-500 focus:bg-zinc-900 placeholder:text-zinc-500"
+          ></textarea>
+        </div>
+
+        <!-- Botão -->
+        <button
+          aria-label="Enviar mensagem"
+          type="button"
+          data-mask-trigger
+          class="btn btn-primary-solid btn-md font-semibold justify-center"
+        >
+          Enviar Mensagem
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  const modal = document.getElementById('contact-modal');
+  const closeBtn = modal?.querySelector('.close-modal');
+  const modalDialog = modal?.querySelector('.modal-dialog');
+
+  // Abre o modal
+  function openModal() {
+    if (!modal) return;
+    
+    modal.classList.remove('invisible', 'opacity-0');
+    modalDialog?.classList.remove('scale-95');
+    modalDialog?.classList.add('scale-100');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Fecha o modal
+  function closeModal() {
+    if (!modal) return;
+    
+    modalDialog?.classList.remove('scale-100');
+    modalDialog?.classList.add('scale-95');
+    modal.classList.add('opacity-0');
+    
+    setTimeout(() => {
+      modal.classList.add('invisible');
+      document.body.style.overflow = '';
+    }, 300);
+  }
+
+  // Listeners
+  function initModal() {
+    // Botões que abrem o modal
+    const triggers = document.querySelectorAll('[data-open-contact-modal]');
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+      });
+    });
+
+    // Botão de fechar
+    closeBtn?.addEventListener('click', closeModal);
+
+    // Fecha com ESC
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'Escape' && !modal?.classList.contains('invisible')) {
+        closeModal();
+      }
+    });
+
+    // Fecha ao clicar fora
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Previne fechar ao clicar no conteúdo
+    modalDialog?.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  // Inicializa
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initModal);
+  } else {
+    initModal();
+  }
+
+  // Re-inicializa após View Transitions
+  document.addEventListener('astro:page-load', initModal);
+
+  // Fecha automaticamente após envio bem-sucedido
+  document.addEventListener('maskguardian:sent', (e) => {
+    if (e.detail.formId === 'contact-modal') {
+      setTimeout(closeModal, 2000);
+    }
+  });
+</script>
+
+<style>
+  /* Transição suave da escala */
+  .modal-dialog {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Variante white (se precisar) */
+  .contact-modal[data-modal-variant="white"] .modal-content {
+    background-color: white;
+    color: #18181b;
+  }
+
+  .contact-modal[data-modal-variant="white"] h2,
+  .contact-modal[data-modal-variant="white"] p,
+  .contact-modal[data-modal-variant="white"] label {
+    color: #18181b !important;
+  }
+
+  .contact-modal[data-modal-variant="white"] .close-modal {
+    color: #18181b !important;
+  }
+
+  .contact-modal[data-modal-variant="white"] input,
+  .contact-modal[data-modal-variant="white"] textarea {
+    background-color: #f4f4f5 !important;
+    border-color: #d4d4d8 !important;
+    color: #18181b !important;
+  }
+</style>

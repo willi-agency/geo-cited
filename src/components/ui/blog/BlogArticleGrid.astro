@@ -1,0 +1,249 @@
+---
+// src/components/blog/BlogArticleGrid.astro
+import BlogSearch from "@/components/integrations/BlogSearch.astro";
+import { Icon } from "astro-icon/components";
+import { Image } from 'astro:assets';
+
+interface Author {
+  id: string;
+  name: string;
+  bio: string;
+  image: string | null;
+  profileUrl: string | null;
+  sameAs: string[];
+}
+
+interface Taxonomy {
+  id: string;
+  name: string;
+  slug: string;
+  type: string;
+  description: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  thumb: string | null;
+}
+
+interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  image: string;
+  recommended: boolean;
+  createdAt: string;
+  updatedAt: string;
+  author: Author;
+  taxonomies: Taxonomy[];
+}
+
+interface Props {
+  posts: Post[];
+  title: string;
+  description?: string;
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+}
+
+const { posts = [], title, description, currentPage, totalPages, baseUrl } = Astro.props;
+
+// Validação de segurança
+const safePosts = Array.isArray(posts) ? posts : [];
+
+const formatDate = (dateString: string) => {
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  } catch {
+    return 'Data inválida';
+  }
+};
+
+// Gerar array de páginas para paginação
+const getPageNumbers = () => {
+  const pages = [];
+  const maxVisible = 5;
+  
+  if (totalPages <= maxVisible) {
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
+  } else {
+    if (currentPage <= 3) {
+      for (let i = 1; i <= 4; i++) pages.push(i);
+      pages.push('...');
+      pages.push(totalPages);
+    } else if (currentPage >= totalPages - 2) {
+      pages.push(1);
+      pages.push('...');
+      for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      pages.push('...');
+      pages.push(currentPage - 1);
+      pages.push(currentPage);
+      pages.push(currentPage + 1);
+      pages.push('...');
+      pages.push(totalPages);
+    }
+  }
+  
+  return pages;
+};
+
+const pageNumbers = totalPages > 1 ? getPageNumbers() : [];
+---
+
+<section class="py-16 px-4 mt-20">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="w-full mb-12 flex flex-wrap justify-between items-center gap-5">
+      <div>
+        <h1 class="text-4xl md:text-5xl font-bold text-zinc-900 mb-4">
+          {title}
+        </h1>
+        {description && (
+          <p class="text-lg text-zinc-600">
+            {description}
+          </p>
+        )}
+      </div>
+      <BlogSearch />
+    </div>
+
+    <!-- Posts Grid -->
+    {safePosts.length > 0 ? (
+      <>
+        <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {safePosts.map((post) => {
+            // Validação de segurança para taxonomies
+            const taxonomies = Array.isArray(post.taxonomies) ? post.taxonomies : [];
+            const categories = taxonomies.filter(tax => tax?.type === 'category').slice(0, 1);
+            
+            return (
+              <li 
+                class="group overflow-hidden rounded-[10px] bg-white shadow-[0_4px_80px_rgba(0,0,0,0.08)] transition-all hover:shadow-[0_8px_100px_rgba(0,0,0,0.12)]"
+              >
+                <a href={`/blog/${post.slug}`} class="block overflow-hidden">
+                  <Image 
+                    src={post.image} 
+                    alt={post.title}
+                    width="856" 
+                    height="540" 
+                    class="h-64 w-full object-cover transition-all duration-300 group-hover:scale-105"
+                  />
+                </a>
+                <div class="p-5">
+                  <!-- Post Meta -->
+                  <ul class="flex flex-wrap items-center gap-4 text-sm">
+                    {categories.map((category) => (
+                      <li class="relative font-semibold flex flex-row items-center justify-center gap-4">
+                        <a 
+                          href={`/blog/categoria/${category.slug}`}
+                          class="hover:text-orange-600 transition-colors"
+                        >
+                          {category.name}
+                        </a>
+                        <Icon width={20} height={20} name="lucide:dot" />
+                      </li>
+                    ))}
+                    <li class="font-semibold text-zinc-600">
+                      {formatDate(post.createdAt)}
+                    </li>
+                  </ul>
+
+                  <!-- Post Title & Description -->
+                  <h3 class="mb-3 mt-7 text-xl font-bold leading-tight hover:text-orange-600 transition-colors">
+                    <a href={`/blog/${post.slug}`}>
+                      {post.title}
+                    </a>
+                  </h3>
+                  <p class="mb-7 line-clamp-2 text-zinc-600 last:mb-0">
+                    {post.description}
+                  </p>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+
+        <!-- Paginação -->
+        {totalPages > 1 && (
+          <nav class="flex justify-center items-center gap-2" aria-label="Paginação">
+            <!-- Botão Anterior -->
+            {currentPage > 1 ? (
+              <a 
+                href={currentPage === 2 ? baseUrl : `${baseUrl}/${currentPage - 1}`}
+                class="flex items-center justify-center w-10 h-10 rounded-lg border border-zinc-300 bg-white hover:bg-zinc-50 transition-colors"
+                aria-label="Página anterior"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+              </a>
+            ) : (
+              <span class="flex items-center justify-center w-10 h-10 rounded-lg border border-zinc-200 bg-zinc-100 text-zinc-400 cursor-not-allowed">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+              </span>
+            )}
+
+            <!-- Números das Páginas -->
+            {pageNumbers.map((pageNum) => (
+              pageNum === '...' ? (
+                <span class="px-3 text-zinc-500">...</span>
+              ) : pageNum === currentPage ? (
+                <span class="flex items-center justify-center w-10 h-10 rounded-lg bg-orange-600 text-white font-semibold">
+                  {pageNum}
+                </span>
+              ) : (
+                <a 
+                  href={pageNum === 1 ? baseUrl : `${baseUrl}/${pageNum}`}
+                  class="flex items-center justify-center w-10 h-10 rounded-lg border border-zinc-300 bg-white hover:bg-zinc-50 transition-colors font-medium"
+                >
+                  {pageNum}
+                </a>
+              )
+            ))}
+
+            <!-- Botão Próximo -->
+            {currentPage < totalPages ? (
+              <a 
+                href={`${baseUrl}/${currentPage + 1}`}
+                class="flex items-center justify-center w-10 h-10 rounded-lg border border-zinc-300 bg-white hover:bg-zinc-50 transition-colors"
+                aria-label="Próxima página"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </a>
+            ) : (
+              <span class="flex items-center justify-center w-10 h-10 rounded-lg border border-zinc-200 bg-zinc-100 text-zinc-400 cursor-not-allowed">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </span>
+            )}
+          </nav>
+        )}
+      </>
+    ) : (
+      <div class="text-center py-20">
+        <svg class="w-16 h-16 mx-auto mb-4 text-zinc-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+        <h3 class="text-xl font-semibold text-zinc-700 mb-2">Nenhum artigo encontrado</h3>
+        <p class="text-zinc-500 mb-6">Não há artigos disponíveis no momento.</p>
+        <a href="/blog" class="btn btn-primary-solid btn-lg">
+          Voltar ao Blog
+        </a>
+      </div>
+    )}
+  </div>
+</section>

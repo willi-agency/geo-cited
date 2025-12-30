@@ -1,0 +1,48 @@
+---
+// src/pages/blog/recentes/index.astro
+import Layout from '../../../layouts/Layout.astro';
+import BlogArticleGrid from '@/components/ui/blog/BlogArticleGrid.astro';
+import { API_KEY, API_URL_BLOG } from "../../../config/site";
+
+const POSTS_PER_PAGE = 3;
+
+// Buscar posts da primeira página
+const url = `${API_URL_BLOG}/blog/articles/all/${API_KEY}?sortBy=updatedAt&sortOrder=desc&page=1&perPage=${POSTS_PER_PAGE}`;
+
+let posts = [];
+let totalPosts = 0;
+let totalPages = 1;
+
+try {
+  const res = await fetch(url);
+  if (res.ok) {
+    const json = await res.json();
+    posts = json.data || [];
+    totalPosts = json.pagination?.total || 0;
+    totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+  }
+} catch (err) {
+  console.error('Erro ao buscar posts recomendados:', err);
+}
+
+const title = 'Posts Mais recentes';
+const description = totalPosts > 0
+  ? `Confira nossa seleção de ${totalPosts} artigos recomendados especialmente para você.`
+  : 'Confira nossa seleção de artigos recomendados especialmente para você.';
+---
+
+<Layout
+  title={title}
+  description={description}
+  jsonLdItems={["website", "organization"]}
+  canonical="https://geocited.com.br/blog/recentes"
+>
+  <BlogArticleGrid
+    posts={posts}
+    title="Posts Mais recentes"
+    description="Nossa seleção especial dos melhores conteúdos"
+    currentPage={1}
+    totalPages={totalPages}
+    baseUrl="/blog/recentes"
+  />
+</Layout>

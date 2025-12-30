@@ -1,0 +1,77 @@
+---
+import type { FeatureSection } from "@/schemas/features";
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = "dark",
+  tag,
+  title,
+  subtitle,
+  description,
+  cta,
+} = Astro.props.section;
+
+// VARIANT STYLES
+const wrapperClass = {
+  dark: "bg-zinc-900 text-white border-zinc-800",
+  white: "bg-[linear-gradient(135deg,#0B18B0_0%,#060B52_50%,#0B18B0_100%)] text-zinc-900 border-zinc-200",
+  primary: "bg-[linear-gradient(135deg,#0B18B0_0%,#060B52_50%,#0B18B0_100%)] text-white border-primary-300/20",
+}[variant];
+
+const tagBG = {
+  dark: "bg-primary/10 text-primary",
+  white: "bg-primary/10 text-primary",
+  primary: "bg-white/10 text-white",
+}[variant];
+
+const descriptionClass = {
+  dark: "text-zinc-400",
+  white: "text-zinc-600",
+  primary: "text-white/80",
+}[variant];
+---
+
+<div class="mx-auto max-w-5xl">
+  <div class={`rounded-3xl border shadow-sm p-12 md:p-16 relative overflow-hidden ${wrapperClass}`}>
+    <div class="text-center space-y-8 max-w-3xl mx-auto">
+      
+      <div class="space-y-3">
+        <!-- TAG -->
+        {tag && (
+          <div class={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium fade-in ${tagBG}`} data-delay-animation="100">
+            <Icon name="lucide:clock-4" />
+            <span set:html={tag}></span>
+          </div>
+        )}
+
+        <!-- TITLE -->
+        <h2 class="text-2xl md:text-4xl font-semibold leading-tight fade-in" set:html={title}></h2>
+
+        <!-- DESCRIPTION -->
+        {description && (
+          <p class={`text-xl fade-in ${descriptionClass}`}>{description}</p>
+        )}
+      </div>
+
+      <!-- SUBTITLE -->
+      {subtitle && (
+        <p class={`text-xl md:text-2xl font-semibold max-w-xl mx-auto pt-4 fade-in ${variant === "white" ? "text-zinc-900" : "text-white"}`} set:html={subtitle}></p>
+      )}
+
+      <!-- CTA -->
+      {cta && (
+        <div>
+          <a
+            href={cta.href}
+            target={cta.target}
+            class={`btn btn-${cta.variant} ${cta.customClass ?? ""}`}
+            >{cta.label}</a>
+        </div>
+      )}
+    </div>
+  </div>
+</div>

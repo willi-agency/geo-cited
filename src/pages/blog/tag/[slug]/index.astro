@@ -1,0 +1,67 @@
+---
+// src/pages/blog/tag/[slug]/index.astro
+import Layout from '../../../../layouts/Layout.astro';
+import BlogArticleGrid from '@/components/ui/blog/BlogArticleGrid.astro';
+import { API_URL_BLOG, API_KEY }from "../../../../config/site";
+
+export async function getStaticPaths() {
+  const POSTS_PER_PAGE = 12;
+  
+  // Buscar todas as tags
+  const tagsRes = await fetch(`${API_URL_BLOG}/blog/articles/home/${API_KEY}?listTags=true`);
+  const tagsData = await tagsRes.json();
+  const tags = tagsData.tags || [];
+  
+  const paths = [];
+  
+  for (const tag of tags) {
+    // Buscar posts da página 1
+    const res = await fetch(
+      `${API_URL_BLOG}/blog/articles/all/${API_KEY}?taxonomy=${tag.slug}&taxonomyType=tag&page=1&perPage=${POSTS_PER_PAGE}`
+    );
+    
+    if (!res.ok) continue;
+    
+    const data = await res.json();
+    const posts = data.data || [];
+    const totalPosts = data.pagination?.total || 0;
+    const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+    
+    paths.push({
+      params: { slug: tag.slug },
+      props: {
+        posts: posts,
+        tag: tag,
+        currentPage: 1,
+        totalPages: totalPages,
+        totalPosts: totalPosts
+      }
+    });
+  }
+  
+  console.log(`✅ Tags index: ${paths.length} páginas`);
+  return paths;
+}
+
+const { posts, tag, currentPage, totalPages, totalPosts } = Astro.props;
+
+const title = `${tag.name} - Tag`;
+const description = tag.metaDescription || 
+  `Descubra ${totalPosts} artigos marcados com ${tag.name}. ${tag.description || ''}`;
+---
+
+<Layout
+  title={title}
+  description={description}
+  canonical={`https://geocited.com.br/blog/tag/${tag.slug}`}
+  jsonLdItems={["website", "organization"]}
+>
+  <BlogArticleGrid
+    posts={posts}
+    title={`#${tag.name}`}
+    description={tag.description}
+    currentPage={currentPage}
+    totalPages={totalPages}
+    baseUrl={`/blog/tag/${tag.slug}`}
+  />
+</Layout>

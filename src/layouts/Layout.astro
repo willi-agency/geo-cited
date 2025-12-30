@@ -1,0 +1,145 @@
+---
+// src/layouts/Layout.astro
+import "../styles/global.css";
+import { config } from "../config/site.ts";
+import {
+  jsonLdWebsite,
+  jsonLdOrganization,
+  jsonLdServices,
+  jsonLdFAQ,
+  jsonLdFounder,     // Novo
+  jsonLdMethodology,  // Novo
+} from "../seo/jsonld/index";
+import PaginationSEO from '@/components/seo/PaginationSEO.astro';
+import Navbar from "@/components/section/Navbar.astro";
+import Footer from "@/components/section/Footer.astro";
+
+// Dados de JSON-LD centralizados
+const jsonLdData = {
+  website: jsonLdWebsite,
+  organization: jsonLdOrganization,
+  services: jsonLdServices,
+  faq: jsonLdFAQ,
+  founder: jsonLdFounder,      // Novo
+  methodology: jsonLdMethodology, // Novo
+};
+
+// Tipagem automática baseada nas chaves do objeto
+type JsonLdKey = keyof typeof jsonLdData;
+
+const {
+  title = config.company.title,
+  description = config.company.description,
+  canonical,
+  ogImage = config.meta.social.image,
+  jsonLdItems = [],
+  jsonLdCustom = [],
+  currentPage, 
+  totalPages, 
+  baseUrl 
+} = Astro.props as {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  jsonLdItems?: JsonLdKey[];
+  jsonLdCustom?: any[];
+  currentPage?: number;
+  totalPages?: number;
+  baseUrl?: string;
+};
+
+const jsonLdContent = [
+  ...jsonLdCustom,
+  ...((jsonLdItems && jsonLdItems.length > 0)
+    ? jsonLdItems.map((item) => jsonLdData[item]).filter(Boolean)
+    : []
+  ),
+];
+
+// Função para garantir que URLs sejam absolutas
+const getAbsolute = (url: string) =>
+  url.startsWith("http") ? url : `${config.meta.canonical.replace(/\/$/, "")}${url.startsWith("/") ? "" : "/"}${url}`;
+
+const rybbitSiteId = "699c236d22d1";
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Favicon atualizado para múltiplos formatos -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.webp" />
+    <link rel="apple-touch-icon" href="/favicon.webp" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap">
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={config.meta.author} />
+    <meta name="copyright" content={config.meta.copyright} />
+    <meta name="robots" content={config.meta.robots} />
+
+    {currentPage && totalPages && baseUrl && (
+      <PaginationSEO 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        baseUrl={baseUrl}
+      />
+    )}
+
+    <!-- Canonical (só se passada explicitamente) -->
+    {canonical && <link rel="canonical" href={getAbsolute(canonical)} />}
+
+    <!-- Meta Tags Geográficas -->
+    <meta name="geo.region" content={config.meta.geo.region} />
+    <meta name="geo.placename" content={config.meta.geo.placename} />
+    <meta name="geo.position" content={config.meta.geo.position} />
+
+    <!-- Theme color para mobile (ajuste conforme brand) -->
+    <meta name="theme-color" content="#EEF2FF">
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Open Graph (atenção para images absolutas) -->
+    <meta property="og:type" content={config.meta.social.type} />
+    <meta property="og:image" content={getAbsolute(ogImage)} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={getAbsolute(canonical)} />}
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={config.company.social?.Twitter?.url || ""} />
+    <meta name="twitter:image" content={getAbsolute(ogImage)} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:creator" content={config.company.social?.Twitter?.url || ""} />
+    <script is:inline
+      src="/scripts/rybbit.js"
+      data-site-id={rybbitSiteId}
+      async
+      defer
+    ></script>
+
+    <!-- JSON-LD para SEO estruturado -->
+    {
+      jsonLdContent.length > 0 && jsonLdContent.map((ld) => (
+        <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+      ))
+    }
+  </head>
+  <body class="antialiased bg-body text-body">
+    <main id="main-content" tabindex="-1">
+      <Navbar />
+      <slot />
+      <Footer />
+    </main>
+    <script type="module" src="/scripts/mask-engine.js" defer></script>
+  </body>
+</html>

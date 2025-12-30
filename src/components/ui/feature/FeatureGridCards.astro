@@ -1,0 +1,126 @@
+---
+// imports...
+import type { FeatureSection } from "@/schemas/features";
+import { Icon } from "astro-icon/components";
+import { Image } from 'astro:assets';
+
+export interface Props {
+  section: FeatureSection;
+}
+
+// garantir union de variants
+type Variant = "white" | "dark" | "primary";
+
+// desestruturação — aqui forçamos o tipo do section para incluir variant como Variant
+const {
+  variant = "white",
+  tag,
+  tagLink,
+  title,
+  subtitle,
+  description,
+  items,
+  cta,
+  ctas = [],
+} = Astro.props.section as FeatureSection & { variant?: Variant };
+
+// agora podemos usar containerClass sem erro
+const containerClass: Record<Variant, string> = {
+  white: "bg-white text-zinc-800",
+  dark: "bg-zinc-900 text-white",
+  primary: "bg-primary text-white",
+};
+
+const cardClass: Record<Variant, string> = {
+  white: "bg-zinc-50 hover:bg-primary-50",
+  dark: "bg-zinc-800 hover:bg-zinc-700",
+  primary: "bg-white/10 hover:bg-white/20",
+};
+
+const textClass: Record<Variant, string> = {
+  white: "text-zinc-600",
+  dark: "text-zinc-300",
+  primary: "text-white/90",
+};
+
+const v = variant; // agora v tem tipo Variant
+---
+<!-- markup -->
+<section class={`py-16 px-4 md:px-10 lg:px-20 flex flex-col gap-10 items-center justify-center ${containerClass[v]}`}>
+  {tag && (
+    <div class="text-center">
+      {tagLink ? (
+        <a href={tagLink} class="uppercase tracking-wide text-primary-400 text-sm font-semibold">
+          {tag}
+        </a>
+      ) : (
+        <span class="uppercase tracking-wide text-primary-400 text-sm font-semibold">{tag}</span>
+      )}
+    </div>
+  )}
+
+  {title && (
+    <h2 class="text-center md:text-4xl text-2xl font-semibold max-w-4xl" set:html={title}></h2>
+  )}
+
+  {subtitle && (
+    <p class={`text-center text-lg max-w-3xl ${textClass[v]}`}>
+      {subtitle}
+    </p>
+  )}
+
+  {description && (
+    <p class={`text-center max-w-3xl ${textClass[v]}`}>
+      {description}
+    </p>
+  )}
+
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-8 w-full max-w-5xl">
+    {items?.list?.map((item) => (
+      <div
+       data-delay-animation="100"
+        class={`relative block h-full p-4 rounded-3xl transition duration-200 shadow fade-in ${cardClass[v]}`}
+      >
+        {item.image && (
+          <Image
+            width={300} height={200}
+            class="w-full aspect-video object-cover object-center rounded-2xl"
+            src={item.image.href}
+            alt={item.image.alt || ""}
+          />
+        )}
+
+        <div class="flex flex-row w-full items-center justify-between mt-4">
+          <span class={`text-lg font-semibold ${v === "white" ? "text-zinc-900" : "text-white"}`}>
+            {item.title}
+          </span>
+
+          <Icon
+            class="min-w-8"
+            width="30"
+            height="30"
+            name={item.icon || "lucide:arrow-up-right"}
+          />
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {cta && (
+    <div class="mt-2">
+      <a href={cta.href} target={cta.target} class={`btn btn-${cta.variant} ${cta.customClass || ""}`}>
+        {cta.label}
+      </a>
+    </div>
+  )}
+
+  {ctas?.length > 0 && (
+    <div class="mt-8 flex gap-4 flex-wrap justify-center">
+      {ctas.map((c) => (
+        <a href={c.href} target={c.target} class={`btn btn-${c.variant} ${c.customClass || ""}`}>
+          {c.label}
+        </a>
+      ))}
+    </div>
+  )}
+</section>

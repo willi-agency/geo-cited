@@ -1,0 +1,94 @@
+---
+import type { FeatureSection } from '@/schemas/features';
+import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const { title, subtitle, items, image, cta, variant = 'dark', layout = 'image-right' } = Astro.props.section;
+
+const sectionClasses = variant === 'dark' ? 'bg-zinc-800 text-white' : 'bg-zinc-50 text-secondary-700';
+const cardBorder = variant === 'dark' ? 'border-zinc-600' : 'border-zinc-200';
+const cardBg = variant === 'dark' ? 'bg-card' : 'bg-white';
+const textMuted = variant === 'dark' ? 'text-muted-foreground' : 'text-secondary-600';
+
+const animationType = items?.animation || 'fade-up';
+const startDelay = items?.startDelay ?? 0;
+const gapDelay = items?.gapDelay ?? 0;
+const list = items?.list ?? [];
+
+const isImageLeft = layout === 'image-left';
+
+// Ajuste do grid se não houver imagem
+const gridClasses = image
+  ? 'grid lg:grid-cols-2 gap-12 items-center'
+  : 'grid grid-cols-1 md:grid-cols-2 gap-8 items-start';
+---
+<section class={`py-20 px-4 ${sectionClasses}`}>
+  <div class="container mx-auto max-w-6xl">
+    <!-- Título -->
+    <div class="w-full flex flex-col gap-6 items-center justify-center text-center mb-5">
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-semibold fade-up" data-delay-animation="0" set:html={title}></h2>
+      <div class="sr-only-ai p-4 bg-white rounded-lg text-left border-l-4 border-primary max-w-5xl">
+        <p class="text-sm" itemprop="description" set:html={subtitle}></p>
+      </div>
+    </div>
+
+
+    <!-- Grid -->
+    <div class={`${gridClasses} fade-up`} data-delay-animation="100">
+      <!-- Imagem -->
+      {image && (
+        <div class={`relative flex items-center justify-center ${isImageLeft ? 'order-0' : 'order-1'}`}>
+          <Image 
+            width={800}
+            height={800}
+            src={image.href}
+            alt={image.alt}
+            class={`rounded-2xl shadow-2xl w-full max-w-lg aspect-square object-cover ${image.customClass}`}
+          />
+        </div>
+      )}
+  
+      <!-- Lista de Itens -->
+      <div class={`${image ? '' : 'grid grid-cols-1 md:grid-cols-2 md:col-span-2'} ${image && isImageLeft ? 'order-1' : 'order-0'} ${animationType}`} data-delay-animation={startDelay}>
+        {list.map((item, index) => (
+          <article 
+            class={`flex flex-col md:flex-row rounded-3xl border m-3 ${cardBorder} p-5 ${cardBg} border-border card-hover group`}
+            itemscope 
+            itemtype="https://schema.org/HowToStep"
+          >
+            <div class="flex items-start gap-3">
+              <div class="space-y-2">
+                <h3 class="text-2xl font-bold font-title" itemprop="name">
+                  <dfn>{item.title}</dfn>
+                </h3>
+                <p 
+                  class={`${textMuted} text-base font-medium`} 
+                  itemprop="itemListElement"
+                >
+                  {item.text}
+                </p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+
+    <!-- CTA -->
+    {cta && (
+      <div class="text-center mt-6">
+        <a
+          href={cta.href}
+          target={cta.target}
+          class={`btn btn-${cta.variant} ${cta.customClass || ''}`}
+        >
+          {cta.label} {cta.icon && <Icon name={cta.icon} />}
+        </a>
+      </div>
+    )}
+  </div>
+</section>

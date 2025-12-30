@@ -1,0 +1,360 @@
+---
+// BlogSearch.astro
+import { API_URL_BLOG, API_KEY }from "../../config/site";
+
+interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  image: string;
+  createdAt: string;
+  taxonomies?: Array<{
+    name: string;
+    type: string;
+    slug: string;
+  }>;
+}
+
+// Gera um ID único para esta instância do componente
+const uniqueId = `search-${Math.random().toString(36).substr(2, 9)}`;
+
+// Busca todos os artigos no build time
+let allArticles: Article[] = [];
+
+try {
+  const perPage = 100;
+  let page = 1;
+  let totalPages = 1;
+
+  while (page <= totalPages) {
+    const url = `${API_URL_BLOG}/blog/articles/all/${API_KEY}?perPage=${perPage}&page=${page}&sortBy=createdAt&sortOrder=desc`;
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`Erro ao buscar artigos: ${res.status}`);
+    }
+
+    const response = await res.json();
+
+    let articles: Article[] = [];
+
+    if (Array.isArray(response)) {
+      articles = response;
+    } else if (response.data && Array.isArray(response.data)) {
+      articles = response.data;
+    } else if (response.articles && Array.isArray(response.articles)) {
+      articles = response.articles;
+    }
+
+    allArticles = [...allArticles, ...articles];
+
+    if (response.pagination) {
+      totalPages = response.pagination.totalPages;
+    } else {
+      // Se a API não mandar paginação, quebramos no primeiro loop
+      break;
+    }
+
+    page++;
+  }
+
+} catch (error) {
+  console.error('Erro ao carregar artigos para busca:', error);
+}
+
+---
+
+<div class={`relative blog-search-container-${uniqueId}`}>
+  <form class="relative h-[60px]" onsubmit="return false;">
+    <input 
+      type="search" 
+      id={`blog-search-input-${uniqueId}`}
+      placeholder="Buscar no blog..." 
+      autocomplete="off"
+      class="h-full w-full rounded-2xl border border-zinc-300 bg-white py-[15px] pl-16 pr-16 text-lg outline-none transition-all focus:border-orange-600 focus:ring-2 focus:ring-orange-200"
+    />
+    <button type="button" class="absolute left-[30px] top-0 h-full text-zinc-600 hover:text-orange-600 transition-colors pointer-events-none">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+    </button>
+    <!-- Botão Limpar Customizado -->
+    <button 
+      type="button" 
+      id={`clear-search-btn-${uniqueId}`}
+      class="absolute right-[20px] top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition-colors hidden"
+      aria-label="Limpar busca"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
+  </form>
+
+  <!-- Dropdown de Resultados -->
+  <div 
+    id={`search-results-${uniqueId}`}
+    class="absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-[10px] border border-zinc-200 shadow-[0_8px_30px_rgba(0,0,0,0.12)] max-h-[500px] overflow-y-auto z-50 hidden"
+  >
+    <!-- Loading State -->
+    <div id={`search-loading-${uniqueId}`} class="hidden p-6 text-center text-zinc-500">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-zinc-200 border-t-orange-600"></div>
+      <p class="mt-3 text-sm">Buscando...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div id={`search-empty-${uniqueId}`} class="hidden p-6 text-center text-zinc-500">
+      <svg class="w-12 h-12 mx-auto mb-3 text-zinc-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <p class="text-sm font-medium">Nenhum resultado encontrado</p>
+      <p class="text-xs mt-1">Tente buscar por outros termos</p>
+    </div>
+
+    <!-- Results List -->
+    <ul id={`search-results-list-${uniqueId}`} class="divide-y divide-zinc-100">
+      <!-- Resultados serão inseridos aqui via JavaScript -->
+    </ul>
+  </div>
+</div>
+
+<script define:vars={{ allArticles, uniqueId }}>
+  // Estado da busca
+  let searchTimeout;
+  const searchInput = document.getElementById(`blog-search-input-${uniqueId}`);
+  const searchResults = document.getElementById(`search-results-${uniqueId}`);
+  const searchResultsList = document.getElementById(`search-results-list-${uniqueId}`);
+  const searchEmpty = document.getElementById(`search-empty-${uniqueId}`);
+  const searchLoading = document.getElementById(`search-loading-${uniqueId}`);
+  const clearBtn = document.getElementById(`clear-search-btn-${uniqueId}`);
+
+  // Normaliza string para busca (remove acentos, lowercase)
+  function normalizeString(str) {
+    return str
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  // Busca artigos
+  function searchArticles(query) {
+    if (!query || query.length < 2) {
+      return [];
+    }
+
+    const normalizedQuery = normalizeString(query);
+    
+    return allArticles.filter(article => {
+      const title = normalizeString(article.title);
+      const description = normalizeString(article.description || '');
+      const category = article.taxonomies?.find(t => t.type === 'category');
+      const categoryName = category ? normalizeString(category.name) : '';
+      
+      return (
+        title.includes(normalizedQuery) || 
+        description.includes(normalizedQuery) ||
+        categoryName.includes(normalizedQuery)
+      );
+    }).slice(0, 8); // Limita a 8 resultados
+  }
+
+  // Renderiza resultados
+  function renderResults(results) {
+    searchResultsList.innerHTML = '';
+    
+    if (results.length === 0) {
+      searchEmpty.classList.remove('hidden');
+      searchResultsList.classList.add('hidden');
+      return;
+    }
+
+    searchEmpty.classList.add('hidden');
+    searchResultsList.classList.remove('hidden');
+
+    results.forEach((article, index) => {
+      const category = article.taxonomies?.find(t => t.type === 'category');
+      const date = new Date(article.createdAt).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+
+      const li = document.createElement('li');
+      li.className = 'hover:bg-zinc-50 transition-colors';
+      li.innerHTML = `
+        <a href="/blog/${article.slug}" class="flex gap-4 p-4 group">
+          <div class="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden bg-zinc-100">
+            ${article.image 
+              ? `<img src="${article.image}" alt="${article.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />`
+              : `<div class="w-full h-full flex items-center justify-center text-zinc-300">
+                   <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                   </svg>
+                 </div>`
+            }
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-semibold text-sm text-zinc-900 group-hover:text-orange-600 transition-colors line-clamp-2 mb-1">
+              ${article.title}
+            </h3>
+            <div class="flex items-center gap-3 text-xs text-zinc-500">
+              ${category ? `<span class="font-medium text-orange-600">${category.name}</span>` : ''}
+              <span class="flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                ${date}
+              </span>
+            </div>
+          </div>
+        </a>
+      `;
+      
+      searchResultsList.appendChild(li);
+    });
+  }
+
+  // Mostra/esconde dropdown
+  function showResults() {
+    searchResults.classList.remove('hidden');
+  }
+
+  function hideResults() {
+    setTimeout(() => {
+      searchResults.classList.add('hidden');
+    }, 200);
+  }
+
+  // Mostra/esconde botão limpar
+  function toggleClearButton() {
+    if (searchInput.value.trim().length > 0) {
+      clearBtn.classList.remove('hidden');
+    } else {
+      clearBtn.classList.add('hidden');
+    }
+  }
+
+  // Limpa a busca
+  function clearSearch() {
+    searchInput.value = '';
+    clearBtn.classList.add('hidden');
+    hideResults();
+    searchInput.focus();
+  }
+
+  // Event listeners
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value.trim();
+    toggleClearButton();
+
+    // Limpa timeout anterior
+    clearTimeout(searchTimeout);
+
+    if (query.length < 2) {
+      hideResults();
+      return;
+    }
+
+    // Mostra loading
+    showResults();
+    searchLoading.classList.remove('hidden');
+    searchResultsList.classList.add('hidden');
+    searchEmpty.classList.add('hidden');
+
+    // Debounce de 300ms
+    searchTimeout = setTimeout(() => {
+      searchLoading.classList.add('hidden');
+      const results = searchArticles(query);
+      renderResults(results);
+    }, 300);
+  });
+
+  searchInput.addEventListener('focus', (e) => {
+    const query = e.target.value.trim();
+    if (query.length >= 2) {
+      showResults();
+    }
+  });
+
+  searchInput.addEventListener('blur', () => {
+    hideResults();
+  });
+
+  // Botão limpar
+  clearBtn.addEventListener('click', clearSearch);
+
+  // Fecha ao pressionar ESC
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      searchInput.blur();
+      hideResults();
+    }
+  });
+
+  // Fecha ao clicar fora
+  document.addEventListener('click', (e) => {
+    const container = document.querySelector(`.blog-search-container-${uniqueId}`);
+    if (container && !container.contains(e.target)) {
+      hideResults();
+    }
+  });
+</script>
+
+<style>
+  /* Remove o X nativo do input search em todos os navegadores */
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  input[type="search"]::-ms-clear,
+  input[type="search"]::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Custom scrollbar para dropdown */
+  [id^="search-results-"]::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  [id^="search-results-"]::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  [id^="search-results-"]::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px;
+  }
+  
+  [id^="search-results-"]::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
+
+  /* Animação suave do dropdown */
+  [id^="search-results-"] {
+    animation: slideDown 0.2s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

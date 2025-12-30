@@ -1,0 +1,93 @@
+---
+// src/components/section/ComparisonGEO.astro
+import { config } from "@/config/site";
+---
+
+<section 
+  id="comparativo-seo-geo-dataset" 
+  class="py-24 bg-white text-zinc-900 overflow-hidden"
+  aria-labelledby="comparison-title"
+>
+  <div class="container mx-auto px-4 max-w-6xl">
+    <div class="w-full flex flex-col gap-6 items-center justify-center text-center mb-5 text-secondary-700">
+      <h2 class="text-4xl md:text-5xl lg:text-6xl font-semibold fade-up" data-delay-animation="0">
+        A Grande Transição: <span class="text-primary">SEO vs GEO</span>
+      </h2>
+      <div class="sr-only-ai p-4 bg-zinc-50 rounded-lg text-left border-l-4 border-primary max-w-5xl">
+        <p class="text-sm" itemprop="description">
+          A transição do SEO tradicional para o <strong>Generative Engine Optimization (GEO)</strong> marca a mudança da "Era das Strings" para a "Era das Entidades". Enquanto o SEO foca em indexação de URLs e volume de palavras-chave, o framework da <strong>Geo Cited</strong> prioriza a densidade do Knowledge Graph e o Information Gain, garantindo que marcas sejam a fonte primária de resposta em sistemas RAG e LLMs.
+        </p>
+      </div>
+    </div>
+
+    <div class="relative overflow-x-auto shadow-2xl rounded-3xl border border-zinc-100">
+      <table class="w-full text-left border-collapse bg-white">
+        <caption class="sr-only">Comparativo técnico entre SEO Tradicional e GEO pela Geo Cited</caption>
+        
+        <thead>
+          <tr class="bg-zinc-900 text-white">
+            <th scope="col" class="px-6 py-3 text-lg font-semibold border-b border-zinc-800">Característica</th>
+            <th scope="col" class="px-6 py-3 text-lg font-semibold border-b border-zinc-800">SEO Tradicional (O Ontem)</th>
+            <th scope="col" class="px-6 py-3 text-lg font-semibold border-b border-zinc-800 bg-secondary-800 text-white">GEO - Geo Cited (O Amanhã)</th>
+          </tr>
+        </thead>
+        
+        <tbody class="divide-y divide-zinc-100">
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <th scope="row" class="px-6 py-3 font-bold text-zinc-500 bg-zinc-50/50">Foco Principal</th>
+            <td class="px-6 py-3">Quantidade de páginas indexadas</td>
+            <td class="px-6 py-3 font-semibold text-primary-700 bg-primary/5">Densidade de Knowledge Graph</td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <th scope="row" class="px-6 py-3 font-bold text-zinc-500 bg-zinc-50/50">Prioridade</th>
+            <td class="px-6 py-3">Cobertura de keywords (Strings)</td>
+            <td class="px-6 py-3 font-semibold text-primary-700 bg-primary/5">Profundidade de tópicos (Entities)</td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <th scope="row" class="px-6 py-3 font-bold text-zinc-500 bg-zinc-50/50">Métrica de Sucesso</th>
+            <td class="px-6 py-3">Páginas produzidas por mês</td>
+            <td class="px-6 py-3 font-semibold text-primary-700 bg-primary/5">Relacionamentos semânticos mapeados</td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <th scope="row" class="px-6 py-3 font-bold text-zinc-500 bg-zinc-50/50">Objetivo Final</th>
+            <td class="px-6 py-3">Rankear na 1ª página (Visibilidade)</td>
+            <td class="px-6 py-3 font-semibold text-primary-700 bg-primary/5">Ser a resposta citada (Atribuição)</td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <th scope="row" class="px-6 py-3 font-bold text-zinc-500 bg-zinc-50/50">Unidade de Dado</th>
+            <td class="px-6 py-3">URLs e Documentos completos</td>
+            <td class="px-6 py-3 font-semibold text-primary-700 bg-primary/5">Chunks Atômicos e Embeddings Vetoriais</td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <th scope="row" class="px-6 py-3 font-bold text-zinc-500 bg-zinc-50/50">Consumo</th>
+            <td class="px-6 py-3">Usuário clica e lê no seu site</td>
+            <td class="px-6 py-3 font-semibold text-primary-700 bg-primary/5">IA processa e sintetiza a resposta</td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <th scope="row" class="px-6 py-3 font-bold text-zinc-500 bg-zinc-50/50">Confiança</th>
+            <td class="px-6 py-3">Backlinks (Quantidade/DR)</td>
+            <td class="px-6 py-3 font-semibold text-primary-700 bg-primary/5">Consenso Semântico e Information Gain</td>
+          </tr>
+          <tr class="hover:bg-zinc-50 transition-colors">
+            <th scope="row" class="px-6 py-3 font-bold text-zinc-500 bg-zinc-50/50">Tecnologia</th>
+            <td class="px-6 py-3">Indexação Invertida (Keyword Matching)</td>
+            <td class="px-6 py-3 font-semibold text-primary-700 bg-primary/5">Recuperação Aumentada (RAG) e Embeddings</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center text-center">
+      <p class="text-zinc-500 mb-6 max-w-xl">
+        A arquitetura de informação do SEO tradicional é ignorada por sistemas de RAG. 
+        Sua marca precisa de <strong>estruturação atômica</strong>.
+      </p>
+      <a 
+        href={config.company.contact.whatsapp.url} 
+        class="tn btn-primary-solid btn-xl"
+      >
+        Quero trabalhar diferente com GEO
+      </a>
+    </div>
+  </div>
+</section>

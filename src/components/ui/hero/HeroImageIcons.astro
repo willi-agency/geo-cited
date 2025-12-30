@@ -1,0 +1,118 @@
+---
+import type { FeatureSection } from "@/schemas/features";
+import { Icon } from "astro-icon/components";
+import { Image } from 'astro:assets';
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = "white",
+  layout = "image-right",
+
+  tag,
+  title,
+  subtitle,
+  description,
+
+  cta,
+  ctas,
+
+  image,
+  images = [],
+  items, // usaremos items.list como logos
+} = Astro.props.section;
+
+// VARIANT HANDLER
+const variantClass = {
+  dark: "bg-zinc-900 text-white",
+  white: "bg-white text-zinc-900 dark:bg-zinc-900 dark:text-white",
+  primary: "bg-primary-600 text-white",
+}[variant];
+
+const textMuted = {
+  dark: "text-zinc-300",
+  white: "text-zinc-600 dark:text-zinc-400",
+  primary: "text-white/80",
+}[variant];
+
+// LAYOUT
+const isImageRight = layout === "image-right";
+---
+
+<section class={`w-full overflow-hidden py-12 md:py-20 ${variantClass}`}>
+  <div class="mx-auto max-w-screen-xl grid px-4 md:grid-cols-12 lg:gap-12 xl:gap-0">
+
+    <!-- LEFT SIDE: TEXT -->
+    <div class={`content-center ${isImageRight ? "md:col-span-7" : "md:col-span-7 md:order-2"}`}>
+
+      {tag && (
+        <span class="text-sm font-semibold uppercase tracking-wide opacity-70 mb-2 block left-to-right">
+          {tag}
+        </span>
+      )}
+
+      <h1 class="mb-4 text-4xl md:text-5xl xl:text-6xl max-w-xl font-semibold left-to-right" data-delay-animation="100">
+        {title}
+      </h1>
+
+      <div>
+        {subtitle && (
+          <p class={`mb-2 text-lg lg:text-xl ${textMuted} left-to-right`} data-delay-animation="150">
+            {subtitle}
+          </p>
+        )}
+
+        {description && (
+          <p class={`mb-6 md:mb-12 ${textMuted} lg:text-xl left-to-right`} data-delay-animation="200">
+            {description}0
+          </p>
+        )}
+      </div>
+
+      <!-- PRIMARY CTA -->
+      {(cta || ctas) && (
+        <div class="flex flex-wrap gap-3 left-to-right" data-delay-animation="300">
+          {cta && (
+            <a href={cta.href} target={cta.target} class={`btn btn-${cta.variant} ${cta.customClass || ""}`}>
+              {cta.label} {cta.icon && <Icon name={cta.icon} />}
+            </a>
+          )}
+
+          {ctas?.map(btn => (
+            <a href={btn.href} target={btn.target} class={`btn btn-${btn.variant} ${btn.customClass || ""}`}>
+              {btn.label} {btn.icon && <Icon name={btn.icon} />}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <!-- RIGHT SIDE: IMAGE -->
+    {image && (
+      <div class={`hidden right-to-left md:flex ${isImageRight ? "md:col-span-5" : "md:col-span-5 md:order-1"}`}>
+        <Image width={800} height={500}
+          src={image.href}
+          alt={image.alt}
+          class={`w-full h-auto object-cover rounded-2xl`}
+        />
+      </div>
+    )}
+  </div>
+
+  <!-- LOGOS LIST (items.list) -->
+  {items?.list && items.list.length > 0 && (
+    <div class="mx-auto grid max-w-screen-xl grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 px-4 mt-12 text-gray-500 dark:text-gray-400">
+      {items.list.map((logo) => (
+        <a href={logo.href || "#"} class="flex items-center justify-center opacity-70 hover:opacity-100 transition">
+          {logo.icon ? (
+            <Icon name={logo.icon} height={40} class="w-full" />
+          ) : logo.image ? (
+            <Image width={800} height={500} src={logo.image.href} alt={logo.image.alt} class="h-10 object-contain opacity-70 hover:opacity-100 transition" />
+          ) : null}
+        </a>
+      ))}
+    </div>
+  )}
+</section>

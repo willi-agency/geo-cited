@@ -1,0 +1,97 @@
+---
+import type { FeatureSection } from "@/schemas/features";
+import { Icon } from "astro-icon/components";
+import { Image } from 'astro:assets';
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = "white",
+  layout = "image-right",
+  tag,
+  title,
+  subtitle,
+  description,
+  items,
+  cta,
+  ctas = [],
+  image,
+} = Astro.props.section;
+
+// VARIANT COLORS
+const containerClass = {
+  white: "bg-white text-zinc-900",
+  dark: "bg-zinc-900 text-white",
+}[variant];
+
+const textColor = variant === "white" ? "text-zinc-600" : "text-zinc-300";
+const titleColor = variant === "white" ? "text-zinc-900" : "text-white";
+const iconColor = variant === "white" ? "text-primary-500" : "text-primary-400";
+
+// LAYOUT HANDLING
+const isImageLeft = layout === "image-left";
+const imageOrder = isImageLeft ? "order-0" : "order-1";
+const contentOrder = isImageLeft ? "order-1" : "order-0";
+---
+<section class={`w-full overflow-hidden py-10 md:py-20 px-5 md:px-16 lg:px-20 ${containerClass}`}>
+  <div class="flex flex-col md:flex-row items-center justify-center gap-10">
+
+    <!-- CONTENT -->
+    <div class={`w-full max-w-2xl flex flex-col gap-6 md:gap-10 ${contentOrder} right-to-left`} data-delay-animation="200">
+      <div class="flex flex-col gap-3">
+        {tag && <span class="text-base font-semibold text-primary">{tag}</span>}
+        <h2 class={`text-4xl md:text-5xl lg:text-6xl font-semibold ${titleColor}`} set:html={title}></h2>
+        {subtitle && <p class={`text-lg ${textColor}`}>{subtitle}</p>}
+        {description && <p class={`text-base ${textColor}`}>{description}</p>}
+      </div>
+
+      <!-- LIST -->
+      {items?.list && (
+        <ul class="w-full flex flex-col gap-4">
+          {items.list.map((item) => (
+            <li class="flex items-center gap-2">
+              <Icon name={item.icon ?? "lucide:check"} class={`${iconColor}`} width={26} height={26} />
+              <span class={textColor}>{item.text}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <!-- CTAs -->
+      {(cta || ctas.length > 0) && (
+        <div class="flex flex-col gap-3 mt-4">
+          {cta && (
+            <a href={cta.href} target={cta.target} class={`btn btn-${cta.variant} ${cta.customClass ?? ""}`}>
+              {cta.label}
+            </a>
+          )}
+
+          {ctas.length > 0 && (
+            <div class="flex flex-wrap gap-3">
+              {ctas.map((c) => (
+                <a href={c.href} target={c.target} class={`btn btn-${c.variant} ${c.customClass ?? ""}`}>
+                  {c.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+
+    <!-- IMAGE -->
+    {image && (
+      <div class={`w-full md:max-w-xl flex items-start ${imageOrder} left-to-right`}>
+        <Image
+          height={600}
+          width={600}
+          src={image.href}
+          alt={image.alt}
+          class={`w-full max-w-10/12 md:max-w-xl object-contain ${image.customClass ?? ""}`}
+        />
+      </div>
+    )}
+  </div>
+</section>

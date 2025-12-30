@@ -1,0 +1,115 @@
+---
+import type { FeatureSection } from "@/schemas/features";
+import RowForm from "../forms/RowForm.astro";
+import { Icon } from "astro-icon/components";
+import { Image } from 'astro:assets';
+
+export interface Props {
+  section: FeatureSection;
+}
+
+const {
+  variant = "dark",
+  layout = "image-left",
+  tag,
+  title,
+  subtitle,
+  cta,
+  description,
+  image,
+  showForm = false,
+} = Astro.props.section;
+
+// IMAGE HANDLER
+const hasImage = Array.isArray(image)
+  ? image.length > 0
+  : !!image;
+
+const getFirstImage = () => {
+  if (!image) return null;
+  if (Array.isArray(image)) return image[0];
+  return image;
+};
+
+const img = getFirstImage();
+
+// ORDER HANDLER
+const isImageLeft = layout === "image-left";
+const imageOrder = isImageLeft ? "order-0" : "order-1";
+const contentOrder = isImageLeft ? "order-1" : "order-0";
+
+const bgSection = {
+  dark: "bg-zinc-50 text-zinc-900",
+  white: "bg-zinc-800 text-white",
+  primary: "bg-white text-primary-700",
+}[variant];
+
+const variantClass = {
+  dark: "bg-zinc-900 text-white",
+  white: "bg-white text-zinc-900",
+  primary:
+    "bg-gradient-to-tr from-[#FF5700] via-[#FF742C] to-[#FF7933] text-white",
+}[variant];
+---
+<section class={`w-full flex flex-col items-center justify-center px-4 py-10 md:px-10 md:py-20 ${bgSection}`}>
+  <div class={`w-full overflow-hidden max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-10 justify-items-center items-center rounded-3xl px-4 py-6 md:px-10 md:py-16 ${variantClass}`}>
+    <!-- IMAGE -->
+    {hasImage && img && (
+      <div class={`w-full max-w-md flex justify-center right-to-left ${imageOrder}`}>
+        {img.link ? (
+          <a href={img.link} target={img.target ?? "_self"}>
+            <Image
+              width={400}
+              height={400}
+              src={img.href}
+              alt={img.alt}
+              class={`rounded-2xl w-full aspect-square object-cover ${img.customClass ?? ''}`}
+            />
+          </a>
+        ) : (
+        <Image
+          width={400}
+          height={400}
+          src={img.href}
+          alt={img.alt}
+          class={`rounded-2xl w-full aspect-square object-cover ${img.customClass ?? ''}`}
+        />
+        )}
+      </div>
+    )}
+    <!-- CONTENT -->
+    <div class={`flex flex-col gap-6 max-w-xl left-to-right ${contentOrder}`}>
+
+      <!-- TAG / TITLE / SUBTITLE -->
+      <div class="flex flex-col gap-2">
+        {tag && <span class="text-base font-semibold">{tag}</span>}
+        <h2 class="text-4xl lg:text-6xl font-semibold" set:html={title}></h2>
+        {subtitle && <p class="text-base opacity-80">{subtitle}</p>}
+      </div>
+
+      <!-- DESCRIPTION -->
+      {description && (
+        <p class="text-lg leading-relaxed">
+          {description}
+        </p>
+      )}
+
+      <!-- CTA + FORM -->
+      <div class="flex flex-col gap-4">
+        {cta?.label && (
+          <a href={cta.href} target={cta.target} class={`btn btn-${cta.variant} ${cta.customClass}`}>
+            {cta.label}
+          </a>
+        )}
+
+        {showForm && (
+          <RowForm
+            extraClassesForm="max-w-xl"
+            variant="btn-dark-solid"
+          />
+        )}
+      </div>
+
+    </div>
+  </div>
+</section>

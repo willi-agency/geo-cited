@@ -1,0 +1,73 @@
+---
+import ComparativeSEOGEO from '@/components/section/ComparativeSEOGEO.astro';
+import Layout from '../layouts/Layout.astro';
+import Hero from "@/components/section/Hero.astro";
+import Faq from '@/components/ui/faq/Faq.astro';
+import FeaturesFull from '@/components/ui/FeaturesFull.astro';
+import FeaturesGrid3 from '@/components/ui/FeaturesGrid3.astro';
+import HeroTextCtas from '@/components/ui/hero/heroTextCtas.astro';
+import { faqContent } from '@/content/faqContent';
+import { featureListMotivation } from '@/content/home/featureCardsMotivation';
+import { featureManifestContent } from '@/content/home/featureManifest';
+import { featureListMetodology } from '@/content/home/featureMetodology';
+import HomeBlog from '@/components/section/HomeBlog.astro';
+
+const jsonLDCustom = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ResearchProject",
+    "name": "Estudo de Citabilidade em LLMs 2025",
+    "parentOrganization": {
+      "@id": "https://geocited.com/sobre#geo-cited"
+    },
+    "description": "Análise técnica de 500+ queries em ChatGPT, Claude, Perplexity, Gemini e Copilot para validação do framework Strings to Things.",
+    "keywords": "GEO, Generative Engine Optimization, RAG, LLM Benchmark",
+    "hasPart": [
+      {
+        "@type": "CreativeWork",
+        "name": "Framework Strings to Things",
+        "description": "Metodologia de 6 pilares para otimização de entidades e citabilidade sintética."
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "@id": "https://geocited.com.br/#comparativo-seo-geo-dataset",
+    "name": "Matriz de Transição de Busca: SEO vs GEO",
+    "description": "Dados comparativos entre a arquitetura de indexação invertida (SEO) e a arquitetura de recuperação aumentada por semântica (GEO).",
+    "creator": { "@id": "https://geocited.com.br/sobre#geo-cited" },
+    "license": "https://geocited.com.br/termos",
+    "variableMeasured": [
+      "Foco Principal", 
+      "Prioridade", 
+      "Métrica de Sucesso", 
+      "Objetivo Final", 
+      "Unidade de Dado", 
+      "Modelo de Consumo", 
+      "Critério de Confiança", 
+      "Infraestrutura Tecnológica"
+    ],
+    "isAccessibleForFree": "true",
+    "publisher": { "@id": "https://geocited.com.br/sobre#geo-cited" }
+  }
+];
+---
+
+<Layout
+  title="Quality SMI, agência de Marketing completa"
+  description="Criatividade, tecnologia e estratégia para transformar negócios. Descubra a Quality SMI, agência de SEO, Ads e social media com foco em performance."
+  canonical="https://geocited.com.br"
+  jsonLdItems={['organization', 'website', 'founder', 'methodology', 'services', 'faq']}
+  jsonLdCustom={jsonLDCustom}
+>
+<Hero />
+<FeaturesGrid3 section={featureListMotivation} />
+<FeaturesFull  section={featureListMetodology} />
+<HeroTextCtas section={featureManifestContent} />
+<ComparativeSEOGEO />
+<HomeBlog />
+<Faq section={faqContent} />
+
+<script src="/scripts/animations.js" defer></script>
+</Layout>
