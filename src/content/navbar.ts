@@ -20,7 +20,7 @@ export const navbarContent = {
     { href: "/",         text: "Home" },
     { href: "/manifesto",    text: "Manifesto" },
     { href: "/sobre",    text: "Sobre nós" },
-    { href: "/blog",     text: "Blog" },
+    { href: "/contato", text: "Contato" },
     { href: "https://whatisgeo.io", text: "WhatIsGeo", target: "_blank" }
   ],
   cta: {

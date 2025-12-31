@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { config } from '../config/site';
+---
+
+<Layout
+  title="Política de Privacidade | Geo Cited"
+  description="Entenda como a Geo Cited protege seus dados e respeita sua privacidade em conformidade com a LGPD."
+  canonical="https://geocited.com.br/privacidade"
+  jsonLdItems={["website", "organization"]}
+>
+  <section class="pt-32 pb-20 bg-white mb-10">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <header class="mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-zinc-900 mb-6">Política de Privacidade</h1>
+        <p class="text-zinc-500 text-lg">Última atualização: 30 de Dezembro de 2025</p>
+      </header>
+
+      <div class="prose prose-zinc prose-lg max-w-none text-zinc-700 leading-relaxed">
+        <p>
+          A <strong>Geo Cited</strong>, operada por Maicon Willi, valoriza a privacidade dos seus usuários. Esta política descreve como coletamos e protegemos as informações fornecidas através do nosso formulário de contato e navegação.
+        </p>
+
+        <h2 class="text-2xl font-bold text-zinc-900 mt-10 mb-4">1. Coleta de Dados no Formulário</h2>
+        <p>Ao utilizar nosso formulário de contato, coletamos as seguintes informações:</p>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Nome:</strong> Para identificação e personalização do atendimento.</li>
+          <li><strong>E-mail:</strong> Para retorno da solicitação e envio de propostas.</li>
+          <li><strong>Telefone/WhatsApp:</strong> Para comunicações diretas sobre o diagnóstico de GEO.</li>
+          <li><strong>Dados da Empresa:</strong> Para análise prévia de citabilidade e autoridade digital.</li>
+        </ul>
+
+        <h2 class="text-2xl font-bold text-zinc-900 mt-10 mb-4">2. Finalidade do Tratamento</h2>
+        <p>
+          Os dados coletados têm como finalidade exclusiva o estabelecimento de comunicação comercial, a realização de diagnósticos de <em>Generative Engine Optimization</em> e o envio de conteúdos educativos sobre o mercado de IA. Não comercializamos seus dados com terceiros.
+        </p>
+
+        <h2 class="text-2xl font-bold text-zinc-900 mt-10 mb-4">3. Armazenamento e Segurança</h2>
+        <p>
+          Adotamos medidas técnicas e administrativas para proteger seus dados contra acessos não autorizados. Seus dados são armazenados em servidores seguros e acessados apenas por pessoal autorizado para fins de atendimento.
+        </p>
+
+        <div class="my-10 p-6 bg-primary/5 border-l-4 border-primary rounded-r-xl">
+          <h3 class="text-xl font-bold text-primary-900 mb-2">Compromisso com a Transparência Algorítmica</h3>
+          <p class="text-sm italic">
+            Diferente de sistemas de coleta em massa, a Geo Cited utiliza os dados fornecidos apenas para validar entidades em grafos de conhecimento sob demanda. Não utilizamos seus dados pessoais para treinamento de modelos de IA públicos sem o seu consentimento explícito.
+          </p>
+        </div>
+
+        <h2 class="text-2xl font-bold text-zinc-900 mt-10 mb-4">4. Seus Direitos (LGPD)</h2>
+        <p>De acordo com a LGPD, você tem o direito de:</p>
+        <ul class="list-disc pl-6 space-y-2">
+          <li>Confirmar a existência de tratamento de dados.</li>
+          <li>Acessar, corrigir ou excluir seus dados de nossa base.</li>
+          <li>Revogar o consentimento a qualquer momento através do e-mail: <a href={`mailto:${config.company.contact.email.label}`} class="text-primary hover:underline">{config.company.contact.email.label}</a>.</li>
+        </ul>
+
+        <h2 class="text-2xl font-bold text-zinc-900 mt-10 mb-4">5. Cookies e Rastreamento</h2>
+        <p>
+          Utilizamos cookies técnicos para melhorar a experiência de navegação e ferramentas de análise (como Google Analytics) para entender o comportamento de busca e otimizar nossa estratégia de GEO.
+        </p>
+
+        <div class="flex mt-16 pt-8 border-t border-zinc-100">
+          <p class="text-sm text-zinc-500">
+            Dúvidas sobre nossa política? Entre em contato pelo WhatsApp: {config.company.contact.whatsapp.label}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="/scripts/animations.js"></script>
+</Layout>

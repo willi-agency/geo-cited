@@ -17,9 +17,9 @@ export const footerContent: FooterContent = {
         { type: 'title', text: 'Links Úteis' },
         { type: 'links', items: [
           { label: 'Home',                href: '/' },
-          { label: 'Sobre',               href: '/sobre' },
+          { label: 'Sobre nós',               href: '/sobre' },
+          { label: 'Manifesto',            href: '/manifesto' },
           { label: 'Contato',             href: '/contato' },
-          { label: 'Blog',                href: '/blog' },
           { label: 'Privacidade',         href: '/privacidade' }
         ]}
       ]
