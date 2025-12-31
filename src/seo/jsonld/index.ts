@@ -37,7 +37,11 @@ export const jsonLdFounder = {
     "Data Science aplicada a Marketing",
     "Infraestrutura de Dados",
   ],
-  "worksFor": { "@id": `${config.company.url}/sobre#geo-cited` },
+  "founderOf": { "@id": `${config.company.url}/sobre#geo-cited` },
+  "owns": [
+    { "@id": `${config.company.url}/sobre#geo-cited` },
+    { "@id": "https://whatisgeo.io" }
+  ],
   "sameAs": [
     "https://www.instagram.com/maiconwilli.geo/",
     "https://www.linkedin.com/in/maicon-willi-geo/",
