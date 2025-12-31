@@ -3,12 +3,12 @@ import type { FeatureSection } from "@/schemas/features";
 
 export const featureManifestContent : FeatureSection = {
   variant: "primary",
-  title: "O futuro do SEO -> GEO está documentado",
-  description: "Leia o nosso <strong>Manifesto de Implementação GEO</strong> e entenda os princípios técnicos que as IAs usam para selecionar as fontes de resposta.",
+  title: "Por apenas R$1.000,00",
+  description: "Sua empresa poderá ser nossa parceira na implantação de <strong>novas práticas descobertas em nosso laboratório</strong> sendo <strong>pioneiras no mundo</strong> em Generative Engine Optimization (GEO).",
   ctas: [
     { 
-      label: "Ler o Manifesto da Geo Cited", 
-      href: "/manifesto",
+      label: "Saiba como ser parceiro", 
+      href: "/empresa-parceira",
       target: "_self",
       variant: "soft-primary-solid", 
       customClass:"btn-lg py-4!" },

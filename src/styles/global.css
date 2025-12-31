@@ -86,7 +86,7 @@
   }
 
   .btn-primary-link {
-    @apply text-primary-400 font-bold hover:bg-primary-50 hover:text-primary-600 transition-all cursor-pointer;
+    @apply text-primary-500 font-bold hover:bg-primary-50 hover:text-primary-700 transition-all cursor-pointer;
     font-family: var(--font-ui);
   }
 

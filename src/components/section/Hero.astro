@@ -1,7 +1,6 @@
 ---
 import type { HeroContent } from 'src/schemas/hero';
 import { heroContent } from 'src/content/hero';
-import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
 
 const { content = heroContent } = Astro.props as { content?: HeroContent };
@@ -16,13 +15,15 @@ const { content = heroContent } = Astro.props as { content?: HeroContent };
     </h1>
     <h2 class="text-base md:text-lg font-bold text-secondary-500">{content.subtitle}</h2>
     <div class="w-full flex flex-col gap-2 justify-start">
-      <button
+      <a
         data-rybbit-event="click-button"
         data-rybbit-prop-item_id="cta-primary"
         data-rybbit-prop-section_id="hero"
+        href={content.cta.href}
+        target="_blank"
         class="w-fit flex flex-row items-center justify-center gap-2 btn-primary-solid btn-xl mt-4 md:mt-6"> 
         {content.cta.label}
-      </button>
+      </a>
     </div>
   </div>
   <figure class="w-full max-w-xl p-3 sm:p-0 flex items-center justify-center flex-col gap-3">

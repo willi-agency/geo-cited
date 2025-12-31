@@ -249,7 +249,7 @@
         if (!e)
             return console.error("Script src attribute is missing"),
             null;
-        let t = "https://analytics.geocited.com.br/api";
+        let t = "https://analytics.willi.agency/api";
         if (!t)
             return console.error("Please provide a valid analytics host"),
             null;

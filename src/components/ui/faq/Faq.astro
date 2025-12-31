@@ -43,7 +43,14 @@ const cardBgOpen =
     {description && <p class={`text-base ${textMuted}`}>{description}</p>}
 
     {cta && (
-      <a href={cta.href} target={cta.target ?? "_blank"} class={`w-fit mt-5 btn btn-${cta.variant ?? "dark"} ${cta.customClass ?? ""}`}>
+      <a 
+      href={cta.href} 
+      target={cta.target ?? "_blank"} 
+      class={`w-fit mt-5 btn btn-${cta.variant ?? "dark"} ${cta.customClass ?? ""}`}
+      data-rybbit-event="click-button"
+      data-rybbit-prop-item_id="cta-faq"
+      data-rybbit-prop-section_id="faq-section"
+      >
         {cta.text}
       </a>
     )}

@@ -20,6 +20,7 @@ export const footerContent: FooterContent = {
           { label: 'Sobre nós',               href: '/sobre' },
           { label: 'Manifesto',            href: '/manifesto' },
           { label: 'Contato',             href: '/contato' },
+          { label: 'Empresa parceira',         href: '/empresa-parceira' },
           { label: 'Privacidade',         href: '/privacidade' }
         ]}
       ]

@@ -49,7 +49,6 @@ export const jsonLdFounder = {
   ]
 };
 
-// 2. Organização (O Nó Central)
 export const jsonLdOrganization = {
   "@context": "https://schema.org",
   "@type": "Organization",

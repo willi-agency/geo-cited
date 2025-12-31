@@ -1,0 +1,158 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Contato | Geo Cited"
+  description="Entre em contato com a Geo Cited para consultas, suporte ou parcerias relacionadas ao nosso serviço de Generative Engine Optimization."
+  canonical="https://geocited.com.br/privacidade"
+  jsonLdItems={["website", "organization"]}
+>
+  <section id="detalhes-parceria" class="py-20 px-8 mt-10 bg-zinc-50">
+    <div class="max-w-[800px] m-auto">
+      <div class="mb-12 border-l-4 border-orangeprimary-600 pl-6">
+        <h3 class="text-3xl font-bold text-zinc-900 mb-4">Termos da Parceria de Pesquisa & Desenvolvimento</h3>
+        <p class="text-zinc-600 text-lg">
+          Diferente de uma contratação de serviço tradicional, este laboratório é um esforço conjunto para dominar o pioneirismo da citabilidade em motores generativos, ou seja, visamos a descoberta científica e a validação de hipóteses inovadoras. Abaixo estão os principais termos e condições para participação:
+        </p>
+      </div>
+
+      <div class="grid gap-8">
+        <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm">
+          <h4 class="font-bold text-zinc-800 flex items-center gap-2 mb-3">
+            <span class="text-orangeprimary-600">01.</span> Investimento Operacional
+          </h4>
+          <p class="text-zinc-600 leading-relaxed">
+            O valor de participação é tabelado em <strong class="text-zinc-900">R$ 1.000,00</strong>. Este montante é integralmente destinado aos custos de infraestrutura e implantação do experimento. <strong>Não há margem de lucro</strong> para a Geo Cited neste valor; nosso ganho está na validação das hipóteses e nos dados gerados.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm">
+          <h4 class="font-bold text-zinc-800 flex items-center gap-2 mb-3">
+            <span class="text-orangeprimary-600">02.</span> Nivelamento de GEO
+          </h4>
+          <p class="text-zinc-600 leading-relaxed">
+            Sua empresa não começa do zero. Ao entrar, aplicamos imediatamente o <strong>"Nivelamento de GEO"</strong>: a implementação de todas as estratégias que já foram descobertas e validadas em nosso laboratório, garantindo que sua base semântica esteja no estado da arte.
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-zinc-200 shadow-sm">
+          <h4 class="font-bold text-zinc-800 flex items-center gap-2 mb-3">
+            <span class="text-orangeprimary-600">03.</span> Limitação de Vagas e Nichos
+          </h4>
+          <p class="text-zinc-600 leading-relaxed mb-4">
+            Para garantir a integridade dos dados, limitamos o número de parceiros por nicho de atuação. Atualmente, o laboratório conta com <strong class="text-zinc-900 text-lg">12 empresas ativas</strong> e estamos expandindo para o limite máximo de <strong>40 parceiros</strong>.
+          </p>
+          <div class="p-3 bg-zinc-50 rounded-lg border-l-2 border-zinc-300">
+            <p class="text-xs text-zinc-500 italic">
+              <strong>Fila de Espera:</strong> Ao atingir o teto de 40 empresas, as novas solicitações entrarão automaticamente em uma lista de prioridade para futuras expansões do laboratório.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-zinc-900 p-8 rounded-xl text-zinc-300">
+          <h4 class="font-bold text-white text-xl mb-6">Comprometimento do Parceiro</h4>
+          <ul class="flex flex-col gap-4">
+            <li class="flex gap-3">
+              <span class="text-orangeprimary-500 font-bold">✓</span>
+              <span><strong>Gestão de Reputação:</strong> Zelar ativamente pela marca em todos os pontos de contato digitais. O GEO depende da percepção pública e menções orgânicas.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-orangeprimary-500 font-bold">✓</span>
+              <span><strong>Capacidade Operacional:</strong> Estar ciente de que haverá demanda para publicações e <i>Guest Posts</i> otimizados. Forneceremos o treinamento, mas a execução exige braço do parceiro.</span>
+            </li>
+            <li class="flex gap-3">
+              <span class="text-orangeprimary-500 font-bold">✓</span>
+              <span><strong>Cultura de Experimento:</strong> Compreender que, por ser R&D, algumas hipóteses podem não trazer resultados imediatos. O foco é a descoberta científica e o pioneirismo.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="p-6 bg-orangeprimary-50 border border-orangeprimary-200 rounded-xl">
+          <p class="text-sm text-orangeprimary-900 leading-relaxed italic">
+            <strong>Nota sobre a evolução do ciclo:</strong> Este laboratório tem fim determinado. Assim que o modelo de GEO para seu nicho atingir a maturidade técnica, a parceria de pesquisa é encerrada. Nesse estágio, o parceiro terá a prioridade para migrar para o modelo de consultoria plena, adequando-se aos valores comerciais vigentes.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-[800px] m-auto p-8 bg-white border border-zinc-200 rounded-xl shadow-sm mt-16">
+      <form class="contact-form flex flex-col gap-6" data-form-id="empresa-parceira">
+        <head>
+          <p class="text-xl font-title font-bold">Preencha o formulário para participar</p>
+        </head>
+      <!-- Nome -->
+      <div class="form-group flex flex-col gap-1">
+        <label for="contact-name-enterprise" class="font-semibold text-sm text-zinc-600">Nome da empresa</label>
+        <input
+          type="text"
+          id="contact-name-enterprise"
+          data-field="nomeEmpresa"
+          name="name"
+          required
+          placeholder="Empresa"
+          class="px-4 py-3 border-2 border-zinc-500 rounded-lg bg-zinc-50 text-zinc-900 text-base transition-colors duration-200 focus:outline-none focus:border-primary-600 placeholder:text-zinc-500"
+        />
+      </div>
+
+      <div class="form-group flex flex-col gap-1">
+        <label for="contact-name" class="font-semibold text-sm text-zinc-600">Nome do responsável</label>
+        <input
+          type="text"
+          id="contact-name"
+          data-field="nome"
+          name="name"
+          required
+          placeholder="Seu nome"
+          class="px-4 py-3 border-2 border-zinc-500 rounded-lg bg-zinc-50 text-zinc-900 text-base transition-colors duration-200 focus:outline-none focus:border-primary-600 placeholder:text-zinc-500"
+        />
+      </div>
+
+      <!-- Nome -->
+      <div class="form-group flex flex-col gap-1">
+        <label for="email-contact" class="font-semibold text-sm text-zinc-600">Email</label>
+        <input
+          type="email"
+          id="email-contact"
+          data-field="email"
+          name="name"
+          required
+          placeholder="email@example.com"
+          class="px-4 py-3 border-2 border-zinc-500 rounded-lg bg-zinc-50 text-zinc-900 text-base transition-colors duration-200 focus:outline-none focus:border-primary-600 placeholder:text-zinc-500"
+        />
+      </div>
+
+      <!-- Telefone -->
+      <div class="relative form-group flex flex-col gap-1">
+        <label for="input-wpp" class="font-semibold text-sm text-zinc-600">Telefone para contato</label>
+        <input id="input-wpp" data-field="whatsapp" data-mask="(##) ####-#### || (##) #####-####" class="px-4 py-3 border-2 border-zinc-500 rounded-lg bg-zinc-50 text-zinc-900 text-base focus:outline-none focus:border-orangeprimary-600 placeholder:text-zinc-500" type="text" placeholder="(00) 00000-0000">
+      </div>
+
+      <!-- Mensagem -->
+      <div class="form-group flex flex-col gap-1">
+        <label for="contact-message" class="font-semibold text-sm text-zinc-600">Mensagem</label>
+        <textarea
+          id="contact-message"
+          data-field="mensagem"
+          name="message"
+          rows="5"
+          required
+          placeholder="Fale sobre sua empresa e interesse na parceria..."
+          class="px-4 py-3 border-2 border-zinc-500 rounded-lg bg-zinc-50 text-zinc-900 text-base transition-colors duration-200 resize-y min-h-[120px] focus:outline-none focus:border-orangeprimary-600 placeholder:text-zinc-500"
+        ></textarea>
+      </div>
+
+      <!-- Botão -->
+      <button
+        aria-label="Enviar mensagem"
+        type="button"
+        id="btnModal" 
+        data-mask-trigger="modal-wpp"
+        class="btn btn-primary-solid btn-md font-semibold justify-center"
+      >
+        Enviar solicitção
+      </button>
+    </form>
+    </div>
+  </section>
+</Layout>

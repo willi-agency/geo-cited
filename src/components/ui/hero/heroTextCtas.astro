@@ -84,7 +84,14 @@ const center = layout === "center";
     {(cta || ctas) && (
       <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in">
         {cta && (
-          <a href={cta.href} target={cta.target} class={`btn btn-${cta.variant} ${cta.customClass}`}>
+          <a 
+          href={cta.href} 
+          target={cta.target} 
+          class={`btn btn-${cta.variant} ${cta.customClass}`}
+          data-rybbit-event="click-button"
+          data-rybbit-prop-item_id="cta-parceiria"
+          data-rybbit-prop-section_id="seja-parceiro"
+          >
             {cta.label} {cta?.icon && (<Icon name={cta.icon} />)}
           </a>
         )}

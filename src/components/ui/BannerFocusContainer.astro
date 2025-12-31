@@ -69,6 +69,9 @@ const descriptionClass = {
             href={cta.href}
             target={cta.target}
             class={`btn btn-${cta.variant} ${cta.customClass ?? ""}`}
+            data-rybbit-event="click-button"
+            data-rybbit-prop-item_id="cta-primary"
+            data-rybbit-prop-section_id="gartner-feature"
             >{cta.label}</a>
         </div>
       )}

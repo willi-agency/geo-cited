@@ -10,7 +10,7 @@ export const heroContent: HeroContent = {
   subtitle: "A contagem regressiva começou: De acordo com dados da Semrush, o volume de visitantes vindo de buscas por IA ultrapassará as buscas tradicionais já em 2028.",
   cta: {
     label: "Quero ser citado pelas IAs",
-    href: "#contact-form",
+    href: "https://wa.me/5511946266230",
     style: "primary",
     icon: "lucide:trending-up"
   },

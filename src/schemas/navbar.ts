@@ -4,7 +4,7 @@ export type NavbarContent = {
   logo: {
     href: string;
     alt: string;
-    svg: string;
+    svg: ImageMetadata;
   };
   links: {
     href: string;
