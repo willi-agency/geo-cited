@@ -92,7 +92,6 @@ export const jsonLdOrganization = {
   ]
 };
 
-// 3. Metodologia (Framework proprietário como CreativeWork)
 export const jsonLdMethodology = {
   "@context": "https://schema.org",
   "@type": "CreativeWork",
@@ -107,7 +106,6 @@ export const jsonLdMethodology = {
   ]
 };
 
-// 4. Serviços (Com inclusão de Metodologia e Output)
 export const jsonLdServices = {
   "@context": "https://schema.org",
   "@type": "Service",
@@ -131,7 +129,6 @@ export const jsonLdServices = {
   }
 };
 
-// 5. FAQ (Mantenha o seu, mas use o ID da organização como publisher)
 export const jsonLdFAQ = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
